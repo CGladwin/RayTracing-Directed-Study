@@ -1,0 +1,3 @@
+- note: I try to adopt a philosophy similar to what I understand rust uses via structs, impls, and traits
+- the base vec3 class is analogous to a struct, where the only behaviour defined is to make the class' objects interact in the way np.ndarrays interact (essentially giving us a base data type)
+- point3 adds functionality specific for position points
