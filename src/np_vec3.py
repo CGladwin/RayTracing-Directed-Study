@@ -70,10 +70,11 @@ class point3(vec3):
     def unit_vector(self) :
         return vec3([x / self.length() for x in self])
     
-    def write_colour(self,output_path):
+    def write_colour(self) -> str:
+        # note: original write_colour function sends string to output
+        # python convention is to enclose file writing in the with open() context so it seems more scalable to return a string instead
         rgb_byte_output = [256 * x for x in self]
-        with open(output_path,"w+") as f:
-            f.write("%d %d %d\n" % (rgb_byte_output[0],rgb_byte_output[1],rgb_byte_output[2]))
+        return "%d %d %d\n" % (rgb_byte_output[0],rgb_byte_output[1],rgb_byte_output[2])
         
 
 if __name__ == "__main__":

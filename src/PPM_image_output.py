@@ -2,7 +2,7 @@
 import os
 import cv2
 import matplotlib.pyplot as plt
-
+from np_vec3 import point3
 """TODO: 
 - set up venv
 - set up git repo
@@ -28,9 +28,9 @@ def hello_world_ppm(output_ppm_dir: str = ".") -> str:
             progress_indicator("scanlines remaining: ",image_height,image_height-j)
             for i in range(image_width):
                 rgb = [i/(image_width-1),j/(image_height-1),0]
-                irgb = [256 * x for x in rgb]
-                f.write("%d %d %d\n" % (irgb[0],irgb[1],irgb[2]))
-    print("\nDone.") #newline necessary because output stream is pointing to end of previous line, not newline
+                pixel_colour = point3(rgb)
+                f.write(pixel_colour.write_colour())
+    print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
     return output_ppm_path
 
 def view_ppm_img(img_path: str):
