@@ -43,3 +43,5 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
 ![Viewport and pixel grid](viewpoint_and_p_grid.png)
 - the distance from the edges of the viewpoint to the edges of the pixel grid will be half the distance from the pixels to eachother, to ensure even distribution
 - In this figure, we have the viewport, the pixel grid for a 7×5 resolution image, the viewport upper left corner Q, the pixel P0,0 location, the viewport vector Vu (viewport_u), the viewport vector Vv (viewport_v), and the pixel delta vectors Δu and Δv
+- this is implemented in camera.py
+- note: this is the first time we see major performance dropoffs. Some of this is to be expected; python is slower than c++. But I believe leveraging numpy should allow for some optimizations.
