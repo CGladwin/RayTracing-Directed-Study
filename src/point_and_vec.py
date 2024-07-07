@@ -34,8 +34,10 @@ import math
     
 #     def __str__(self):
 #         return str(self.e)
-    
-class vec3(np.ndarray):
+def unit_vector(self) :
+    return vec3([x / self.length() for x in self])
+
+class np_vec3(np.ndarray):
     def __new__(cls,input_array=None):
         if input_array is None:
             return np.zeros(3).view(cls)
@@ -45,7 +47,7 @@ class vec3(np.ndarray):
             return np.array(input_array).view(cls)
         return input_array.view(cls)
     
-class point3(vec3):
+class vec3(np_vec3):
     def x(self):
         return self[0]
     
@@ -61,21 +63,24 @@ class point3(vec3):
     def length(self) -> complex:
         return math.sqrt(self.length_squared())
 
-    def cross(self, other: vec3) -> vec3:
+    def cross(self, other):
         return vec3(np.cross(self,other))
     
-    def dot(self, other: vec3) -> int:
+    def dot(self, other) -> int:
         return np.dot(self,other)
     
-    def unit_vector(self) :
-        return vec3([x / self.length() for x in self])
-    
+class color(vec3):
     def write_colour(self) -> str:
         # note: original write_colour function sends string to output
         # python convention is to enclose file writing in the with open() context so it seems more scalable to return a string instead
         rgb_byte_output = [256 * x for x in self]
         return "%d %d %d\n" % (rgb_byte_output[0],rgb_byte_output[1],rgb_byte_output[2])
-        
+
+class point3(vec3):
+    pass
+    #original code has vec3 and point3 as aliases of the same classes, used to visualize the geometric concepts
+    #IE a vector (has a direction) vs a point in space
+    #this seems like bad practice will look for ways to refactor
 
 if __name__ == "__main__":
     a = point3([4,5,6])
