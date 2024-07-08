@@ -45,3 +45,6 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
 - In this figure, we have the viewport, the pixel grid for a 7×5 resolution image, the viewport upper left corner Q, the pixel P0,0 location, the viewport vector Vu (viewport_u), the viewport vector Vv (viewport_v), and the pixel delta vectors Δu and Δv
 - this is implemented in camera.py
 - note: this is the first time we see major performance dropoffs. Some of this is to be expected; python is slower than c++. But I believe leveraging numpy should allow for some optimizations.
+
+**5. Adding a Sphere**
+- The equation for a sphere of radius r that is centered at the origin is an important mathematical equation: r = sqrt(x^2+y^2+z^2)

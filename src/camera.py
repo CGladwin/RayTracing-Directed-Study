@@ -2,13 +2,15 @@ from point_and_vec import *
 from ray_class import *
 import os
 from PPM_image_output import *
+import cProfile
 
 def ray_colour(r: ray) -> color:
-    unit_direction = unit_vector(r.direction_vec)
+    unit_direction = (r.direction_vec).unit_vector()
     a = 0.5*(unit_direction.y() + 1.0)
     return (1.0-a)*color([1.0, 1.0, 1.0]) + a*color([0.5, 0.7, 1.0])
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def main():
     
     aspect_ratio = 16.0 / 9.0 #ideal ratio
     image_width = 400
@@ -33,13 +35,14 @@ if __name__ == "__main__":
     viewport_v = vec3([0, -viewport_height, 0])
 
     # Calculate the horizontal and vertical delta vectors from pixel to pixel.
-    pixel_delta_u = viewport_u / image_width
-    pixel_delta_v = viewport_v / image_height
+    pixel_delta_u: vec3 = viewport_u / image_width
+    pixel_delta_v: vec3 = viewport_v / image_height
 
     # Calculate the location of the upper left pixel.
-    viewport_upper_left = camera_center - vec3([0, 0, focal_length]) - viewport_u/2 - viewport_v/2
+    viewport_upper_left: vec3 = camera_center - vec3([0, 0, focal_length]) - viewport_u/2 - viewport_v/2
     # starts with camera center, moves in z axis to intersect with viewport, moves left and up
-    pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v)/2
+    pixel00_loc: vec3 = viewport_upper_left + (pixel_delta_u + pixel_delta_v)/2
+    # find the top-left aka first pixel
 
 
     # Render
@@ -61,4 +64,7 @@ if __name__ == "__main__":
                 f.write(pixel_colour.write_colour())
     print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
     view_ppm_img(output_ppm_path)
+
+if __name__ == "__main__":
+    cProfile.run('main()',sort=-1)
             
