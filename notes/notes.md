@@ -48,3 +48,34 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
 
 **5. Adding a Sphere**
 - The equation for a sphere of radius r that is centered at the origin is an important mathematical equation: r = sqrt(x^2+y^2+z^2)
+  - the norm (the sqrt of the sum of the squares of its coords, which cooresponds with the length of the line drawn between that point and the sphere center, which is here the origin) of a point inside the sphere will be less than the radius, and if it's outside the sphere it will be greater
+- if the sphere's center is at an arbitrary point C and not the origin the equation for a point P on its surface is:
+  - ```dot((C - P),(C - P)) = r^2```
+    - note ```dot(a,b) = sum([x*y for x,y in zip(a,b)])``` with a and b being point3's
+  - note that the formula for our ray is `P(t) = Q + td`
+  - subbing it in (separating for t):
+    - `dot(((-td + (C - Q))),(-td + (C - Q))) = r^2`
+  - this can be refactored using the distributive property of vector algebra (the same as polynomial distribution)
+    - `dot(-td,-td) + dot(-td,(C-Q)) + dot((C-Q),-td) + dot((C-Q),(C-Q)) = r^2`
+  - pulling out the scalars:
+    -  `-t^2 * dot(d,d) + -t * dot(d,(C-Q)) + -t * dot((C-Q),d)  + dot((C-Q),(C-Q)) = r^2`
+ -  note that the dot product is commutative `(dot(a,b) = dot(b,a))`:
+    -  `-t^2 * dot(d,d) + -2t * dot(d,(C-Q)) + dot((C-Q),(C-Q)) - r^2 = 0`
+ -  the dot product calculations and r are all scalar and known, so the unknown we're solving for is t. From this lens, the equation is a quadratic equation. 
+    -  The quadratic formula to solve `ax^2 +bx + c = 0` is:
+       -  `(-b +/= sqrt(b^2 - 4ac)) / 2a`
+       -  here:
+          -  `a = dot(d,d)`
+          -  `b = -2 * dot(d,(C-Q))`
+          -  `c = dot((C-Q),(C-Q)) - r^2`
+    -  interpretation:
+       -  if t is negative, there are no solutions (the ray doesn't intersect with the sphere)
+       -  if t is positive, there are 2 solutions (the ray intersects with the sphere twice)
+       -  if t is 0, there is 1 solution (the ray intersects with the sphere once, grazing the surface)
+    -  For now, the number of collisions is the important part, and this can be solved with the discriminant:
+       -  `b^2 - 4ac`
+
+![alt text](ray_sphere_intersection.png)
+
+**Surface Normals and Multiple Objects**
+- 

@@ -55,6 +55,7 @@ def hello_world_ppm_optimized(output_ppm_dir: str = ".",
     # 30% faster based on timeit testing with IO stripped (likely because of more usage of numpy)
     # too harded coded to use right now, but here's a good source to look into this stuff more:
     # https://news.ycombinator.com/item?id=15522428
+    # ideas: array broadcasting + 
 
     output_ppm_path = os.path.abspath(output_ppm_dir)+'\\optimized_image.ppm'
     X = np.array([i for i in range(image_width)]*image_height)

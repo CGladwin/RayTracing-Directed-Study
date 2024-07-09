@@ -4,12 +4,29 @@ import os
 from PPM_image_output import *
 import cProfile
 
+def hit_sphere(center: point3, radius: float, ray: ray) -> float:
+    oc: point3 = ray.origin_point - center
+    # coefficients in the equation at^2 + bt + c = 0, where t is the scalar multiple of the ray's direction in the equation P(t) = Q + td
+    a = np.dot(ray.direction_vec, ray.direction_vec)
+    b = 2.0 * np.dot(ray.direction_vec, oc)
+    c = np.dot(oc, oc) - radius*radius
+    # find the number of solutions
+    discriminant = b*b - 4*a*c
+    if (discriminant < 0):
+        return -1.0
+    else:
+        return (-b - math.sqrt(discriminant) ) / (2.0*a)
+
 def ray_colour(r: ray) -> color:
+    t = hit_sphere(point3([0,0,-1]), 0.5, r)
+    if (t > 0.0):
+        N: vec3 = (r.at(t) - vec3([0,0,-1])).unit_vector()
+        return 0.5*color([N.x()+1, N.y()+1, N.z()+1])
     unit_direction = (r.direction_vec).unit_vector()
     a = 0.5*(unit_direction.y() + 1.0)
+    # Lerping between (255, 255, 255) which is white to a light shade blue (128, 255*0.7, 255)
     return (1.0-a)*color([1.0, 1.0, 1.0]) + a*color([0.5, 0.7, 1.0])
 
-# if __name__ == "__main__":
 def main():
     
     aspect_ratio = 16.0 / 9.0 #ideal ratio
@@ -24,7 +41,6 @@ def main():
     viewport_width = viewport_height * integer_ratio
 
     #Camera
-
     focal_length = 1.0
     viewport_height = 2.0
     viewport_width = viewport_height * integer_ratio
@@ -46,8 +62,6 @@ def main():
 
 
     # Render
-    image_width : int =  256
-    image_height : int = 256
     output_ppm_dir: str = "images"
     output_ppm_path = os.path.abspath(output_ppm_dir)+'\\image.ppm'
 
@@ -66,5 +80,7 @@ def main():
     view_ppm_img(output_ppm_path)
 
 if __name__ == "__main__":
-    cProfile.run('main()',sort=-1)
+    # for profiling code
+    # cProfile.run('main()',sort='tottime')
+    main()
             
