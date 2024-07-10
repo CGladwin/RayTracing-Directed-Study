@@ -4,28 +4,31 @@ import os
 from PPM_image_output import *
 import cProfile
 
-def hit_sphere(center: point3, radius: float, ray: ray) -> float:
-    oc: point3 = ray.origin_point - center
+def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
+    # vector from center of sphere to camera
+    oc: vec3 = ray.origin_point - sphere_center
     # coefficients in the equation at^2 + bt + c = 0, where t is the scalar multiple of the ray's direction in the equation P(t) = Q + td
-    a = np.dot(ray.direction_vec, ray.direction_vec)
-    b = 2.0 * np.dot(ray.direction_vec, oc)
-    c = np.dot(oc, oc) - radius*radius
+    a = (ray.direction_vec).dot(ray.direction_vec) 
+    b = -2.0 * (ray.direction_vec).dot(oc)
+    c = oc.dot(oc) - radius**2
     # find the number of solutions
-    discriminant = b*b - 4*a*c
+    discriminant = b**2 - 4*a*c
     if (discriminant < 0):
         return -1.0
     else:
-        return (-b - math.sqrt(discriminant) ) / (2.0*a)
+        return (-b - math.sqrt(discriminant)) / (2.0*a)
 
 def ray_colour(r: ray) -> color:
-    t = hit_sphere(point3([0,0,-1]), 0.5, r)
+    t = hit_sphere(point3(0,0,-1), 0.5, r)
     if (t > 0.0):
-        N: vec3 = (r.at(t) - vec3([0,0,-1])).unit_vector()
-        return 0.5*color([N.x()+1, N.y()+1, N.z()+1])
+        N: vec3 = (r.at(t) - vec3(0,0,-1)).unit_vector()
+        return color(N.x+1, N.y+1, N.z+1) * 0.5
     unit_direction = (r.direction_vec).unit_vector()
-    a = 0.5*(unit_direction.y() + 1.0)
+    a = 5*(unit_direction.y + 1.0)
     # Lerping between (255, 255, 255) which is white to a light shade blue (128, 255*0.7, 255)
-    return (1.0-a)*color([1.0, 1.0, 1.0]) + a*color([0.5, 0.7, 1.0])
+    return (vec3(1.0, 1.0, 1.0)*(1.0-a) + vec3(0.5, 0.7, 1.0)*a).to_color()
+    # return color.to_color(return_color)
+    
 
 def main():
     
@@ -37,25 +40,25 @@ def main():
     if image_height < 1: 
         image_height = 1
     viewport_height = 2.0
-    integer_ratio = (float(image_width)/image_height)
+    integer_ratio = image_width/image_height
     viewport_width = viewport_height * integer_ratio
 
     #Camera
     focal_length = 1.0
     viewport_height = 2.0
     viewport_width = viewport_height * integer_ratio
-    camera_center = point3([0, 0, 0]) #camera center at the origin
+    camera_center = point3(0, 0, 0) #camera center at the origin
 
     # Calculate the vectors across the horizontal and down the vertical viewport edges.
-    viewport_u = vec3([viewport_width, 0, 0])
-    viewport_v = vec3([0, -viewport_height, 0])
+    viewport_u = vec3(viewport_width, 0, 0)
+    viewport_v = vec3(0, -viewport_height, 0)
 
     # Calculate the horizontal and vertical delta vectors from pixel to pixel.
     pixel_delta_u: vec3 = viewport_u / image_width
     pixel_delta_v: vec3 = viewport_v / image_height
 
     # Calculate the location of the upper left pixel.
-    viewport_upper_left: vec3 = camera_center - vec3([0, 0, focal_length]) - viewport_u/2 - viewport_v/2
+    viewport_upper_left: vec3 = camera_center - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2
     # starts with camera center, moves in z axis to intersect with viewport, moves left and up
     pixel00_loc: vec3 = viewport_upper_left + (pixel_delta_u + pixel_delta_v)/2
     # find the top-left aka first pixel
@@ -63,18 +66,20 @@ def main():
 
     # Render
     output_ppm_dir: str = "images"
-    output_ppm_path = os.path.abspath(output_ppm_dir)+'\\image.ppm'
+    output_ppm_path = os.path.abspath(output_ppm_dir)+'\\first_camera_image.ppm'
 
     with open(output_ppm_path,"w+") as f:
         f.write("P3\n%d %d\n255\n" % (image_width,image_height))
         for j in range(image_height):
             progress_indicator("scanlines remaining: ",image_height,image_height-j)
             for i in range(image_width):
-                # find each pixel by offsetting 0,0 based on pixel deltas
-                pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v)
+                # find each pixel in viewport by offsetting 0,0 based on pixel deltas
+                pixel_center = pixel00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
+                print(pixel_center)
                 ray_direction = pixel_center - camera_center
                 r = ray(camera_center,ray_direction)
                 pixel_colour = ray_colour(r)
+                # print(pixel_colour.x)
                 f.write(pixel_colour.write_colour())
     print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
     view_ppm_img(output_ppm_path)

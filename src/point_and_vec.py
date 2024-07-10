@@ -1,40 +1,78 @@
 # unit 3: the vec3 class
 import numpy as np
 import math
-# class vec3():
-#     def __init__(self, coordinate_list : None | list[int] = None) -> None:
-#         if coordinate_list is None:
-#             self.e = np.zeros(3)
-#             return
-#         if len(coordinate_list) != 3:
-#             raise ValueError("incorrect number of args, 3 required")
-#         if type(coordinate_list) == list:
-#             self.e = np.array(coordinate_list)
-#             return
-#         self.e = coordinate_list
+import numpy as np
+class base_vec3():
+    def __init__(self, x,y,z) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
+
+    @classmethod
+    def from_list(cls,coordinates_list):
+        return cls(coordinates_list[0],coordinates_list[1],coordinates_list[2])
+
+    def as_list(self):
+        return [self.x,self.y,self.z]
     
-#     def x(self):
-#         return self.e[0]
-#     def y(self):
-#         return self.e[1]
-#     def z(self):
-#         return self.e[2]
+    def __add__(self, other):
+        return vec3(self.x + other.x, self.y + other.y,self.z + other.z)
+
+    def __sub__(self, other):
+        return vec3(self.x - other.x, self.y - other.y,self.z - other.z)
+
+    def __mul__(self, other: float | int):
+        return vec3(self.x * other, self.y * other,self.z * other)
+
+    def __truediv__(self, other: float | int):
+        return vec3(self.x / other, self.y / other,self.z / other)
+
+    def __str__(self) -> str:
+        return "%f %f %f" % (self.x,self.y,self.z)
+
+class vec3(base_vec3):
+    def length_squared(self) -> int:
+        return self.x**2 + self.y**2 + self.z**2
     
-#     def __add__(self, other):
-#         return vec3(self.e + other.e)
+    def norm(self) -> complex:
+        # equivalent to np.linalg.norm()
+        return math.sqrt(self.length_squared())
 
-#     def __sub__(self, other):
-#         return vec3(self.e - other.e)
-
-#     def __mul__(self, other):
-#         return vec3(self.e * other.e)
-
-#     def __truediv__(self, other):
-#         return vec3(self.e / other.e)
+    def cross(self, other):
+        return vec3((self.y * other.z) - (self.z * other.y),
+                    (self.z * other.x) - (self.x * other.z),
+                    (self.x * other.y) - (self.y * other.x))
     
-#     def __str__(self):
-#         return str(self.e)
+    def dot(self, other) -> float:
+        return (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
+    
+    def unit_vector(self) :
+        norm = self.norm()
+        return vec3(self.x / norm, self.y / norm, self.z / norm)
+    
+    def to_color(self):
+        return color(self.x,self.y,self.z)
+        
+class color(vec3):
+    @classmethod
+    def to_color(cls,base: vec3):
+        cls.x = base.x
+        cls.y = base.y
+        cls.z = base.z
+        return cls
 
+    def __str__(self) -> str:
+        return "%d %d %d\n" % (self.x*256,self.y*256,self.z*256)
+    
+    def write_colour(self) -> str:
+        # note: original write_colour function sends string to output
+        # python convention is to enclose file writing in the with open() context so it seems more scalable to return a string instead
+        # output = int(np.average(rgb_byte_output))
+        return "%d %d %d\n" % (self.x*256,self.y*256,self.z*256)
+    
+    def write_colour_array(self) -> list:
+        return [int(256 * x) for x in self.as_list()]
+    
 class np_vec3(np.ndarray):
     def __new__(cls,input_array=None):
         if input_array is None:
@@ -45,7 +83,7 @@ class np_vec3(np.ndarray):
             return np.array(input_array).view(cls)
         return input_array.view(cls)
     
-class vec3(np_vec3):
+class old_vec3(np_vec3):
     def x(self):
         return self[0]
     
@@ -74,11 +112,12 @@ class vec3(np_vec3):
     def unit_vector(self) :
         return vec3([x / self.norm() for x in self])
     
-class color(vec3):
+class old_color(vec3):
     def write_colour(self) -> str:
         # note: original write_colour function sends string to output
         # python convention is to enclose file writing in the with open() context so it seems more scalable to return a string instead
         rgb_byte_output = [256 * x for x in self]
+        # output = int(np.average(rgb_byte_output))
         return "%d %d %d\n" % (rgb_byte_output[0],rgb_byte_output[1],rgb_byte_output[2])
     def write_colour_array(self) -> list:
         return [int(256 * x) for x in self]
@@ -90,9 +129,9 @@ class point3(vec3):
     #this seems like bad practice will look for ways to refactor
 
 if __name__ == "__main__":
-    a = point3([4,5,6])
+    a = point3(4,5,6)
     print(a)
-    b = point3([1,2,3])
+    b = point3(1,2,3)
     c = a.dot(b)
     print(a.length())
 

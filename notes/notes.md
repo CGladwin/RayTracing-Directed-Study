@@ -58,9 +58,9 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
   - this can be refactored using the distributive property of vector algebra (the same as polynomial distribution)
     - `dot(-td,-td) + dot(-td,(C-Q)) + dot((C-Q),-td) + dot((C-Q),(C-Q)) = r^2`
   - pulling out the scalars:
-    -  `-t^2 * dot(d,d) + -t * dot(d,(C-Q)) + -t * dot((C-Q),d)  + dot((C-Q),(C-Q)) = r^2`
- -  note that the dot product is commutative `(dot(a,b) = dot(b,a))`:
-    -  `-t^2 * dot(d,d) + -2t * dot(d,(C-Q)) + dot((C-Q),(C-Q)) - r^2 = 0`
+    -  `-t * -t * dot(d,d) + -t * dot(d,(C-Q)) + -t * dot((C-Q),d)  + dot((C-Q),(C-Q)) = r^2`
+ -  note that the dot product is commutative `(dot(a,b) = dot(b,a))` (also bringing over r):
+    -  `t^2 * dot(d,d) + -2t * dot(d,(C-Q)) + dot((C-Q),(C-Q)) - r^2 = 0`
  -  the dot product calculations and r are all scalar and known, so the unknown we're solving for is t. From this lens, the equation is a quadratic equation. 
     -  The quadratic formula to solve `ax^2 +bx + c = 0` is:
        -  `(-b +/= sqrt(b^2 - 4ac)) / 2a`
@@ -78,4 +78,7 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
 ![alt text](ray_sphere_intersection.png)
 
 **Surface Normals and Multiple Objects**
-- 
+  - First, let’s get ourselves a surface normal so we can shade. This is a vector that is perpendicular to the surface at the point of intersection.
+  - sphere normals can be made unit length simply by dividing by the sphere radius, avoiding the square root entirely.
+  - in this project: we will adopt the policy that all normal vectors will be of unit length.
+  - 
