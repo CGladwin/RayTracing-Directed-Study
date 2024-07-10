@@ -78,4 +78,6 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
 ![alt text](ray_sphere_intersection.png)
 
 **Surface Normals and Multiple Objects**
-- 
+  - First, let’s get ourselves a surface normal so we can shade. This is a vector that is perpendicular to the surface at the point of intersection.
+  - sphere normals can be made unit length simply by dividing by the sphere radius, avoiding the square root entirely.
+  - in this project: we will adopt the policy that all normal vectors will be of unit length.
