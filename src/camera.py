@@ -3,16 +3,21 @@ from ray_class import *
 import os
 from PPM_image_output import *
 import cProfile
+from numba import jit
 
 def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
     # vector from center of sphere to camera
     oc: vec3 = ray.origin_point - sphere_center
     # coefficients in the equation at^2 + bt + c = 0, where t is the scalar multiple of the ray's direction in the equation P(t) = Q + td
     a = (ray.direction_vec).dot(ray.direction_vec) 
-    b = -2.0 * (ray.direction_vec).dot(oc)
+    b = 2.0 * (ray.direction_vec).dot(oc)
     c = oc.dot(oc) - radius**2
     # find the number of solutions
     discriminant = b**2 - 4*a*c
+    # if a != np.dot(ray.direction_vec.as_list(),ray.direction_vec.as_list()):
+    #     raise ValueError("issue is with a")
+    # if b != np.dot(ray.direction_vec.as_list(),ray.direction_vec.as_list()):
+    #     raise ValueError("issue is with a")
     if (discriminant < 0):
         return -1.0
     else:
@@ -22,14 +27,14 @@ def ray_colour(r: ray) -> color:
     t = hit_sphere(point3(0,0,-1), 0.5, r)
     if (t > 0.0):
         N: vec3 = (r.at(t) - vec3(0,0,-1)).unit_vector()
-        return color(N.x+1, N.y+1, N.z+1) * 0.5
+        return (vec3(N.x+1, N.y+1, N.z+1) * 0.5).to_color()
     unit_direction = (r.direction_vec).unit_vector()
-    a = 5*(unit_direction.y + 1.0)
+    a = 0.5*(unit_direction.y + 1.0)
     # Lerping between (255, 255, 255) which is white to a light shade blue (128, 255*0.7, 255)
-    return (vec3(1.0, 1.0, 1.0)*(1.0-a) + vec3(0.5, 0.7, 1.0)*a).to_color()
-    # return color.to_color(return_color)
+    a = (vec3(1.0, 1.0, 1.0)*(1.0-a) + vec3(0.5, 0.7, 1.0)*a).to_color()
+    return a
+    # return color(0,0,0)
     
-
 def main():
     
     aspect_ratio = 16.0 / 9.0 #ideal ratio
@@ -75,7 +80,7 @@ def main():
             for i in range(image_width):
                 # find each pixel in viewport by offsetting 0,0 based on pixel deltas
                 pixel_center = pixel00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
-                print(pixel_center)
+                # print(pixel_center)
                 ray_direction = pixel_center - camera_center
                 r = ray(camera_center,ray_direction)
                 pixel_colour = ray_colour(r)

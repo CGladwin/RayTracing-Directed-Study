@@ -2,7 +2,11 @@
 import numpy as np
 import math
 import numpy as np
+from pydantic import BaseModel
 class base_vec3():
+    x: float
+    y: float
+    z: float
     def __init__(self, x,y,z) -> None:
         self.x = x
         self.y = y
@@ -47,8 +51,7 @@ class vec3(base_vec3):
         return (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
     
     def unit_vector(self) :
-        norm = self.norm()
-        return vec3(self.x / norm, self.y / norm, self.z / norm)
+        return self / self.norm()
     
     def to_color(self):
         return color(self.x,self.y,self.z)
@@ -72,55 +75,6 @@ class color(vec3):
     
     def write_colour_array(self) -> list:
         return [int(256 * x) for x in self.as_list()]
-    
-class np_vec3(np.ndarray):
-    def __new__(cls,input_array=None):
-        if input_array is None:
-            return np.zeros(3).view(cls)
-        if len(input_array) != 3:
-            raise ValueError("incorrect number of args, 3 required")
-        if type(input_array) == list:
-            return np.array(input_array).view(cls)
-        return input_array.view(cls)
-    
-class old_vec3(np_vec3):
-    def x(self):
-        return self[0]
-    
-    def y(self):
-        return self[1]
-    
-    def z(self):
-        return self[2]
-    
-    def norm(self) -> int:
-        return np.linalg.norm(self)
-    
-    def length_squared(self) -> int:
-        # equivalent to np.linalg.norm()
-        return sum([x**2 for x in self])
-    
-    def length(self) -> complex:
-        return math.sqrt(self.length_squared())
-
-    def cross(self, other):
-        return vec3(np.cross(self,other))
-    
-    def dot(self, other) -> int:
-        return np.dot(self,other)
-    
-    def unit_vector(self) :
-        return vec3([x / self.norm() for x in self])
-    
-class old_color(vec3):
-    def write_colour(self) -> str:
-        # note: original write_colour function sends string to output
-        # python convention is to enclose file writing in the with open() context so it seems more scalable to return a string instead
-        rgb_byte_output = [256 * x for x in self]
-        # output = int(np.average(rgb_byte_output))
-        return "%d %d %d\n" % (rgb_byte_output[0],rgb_byte_output[1],rgb_byte_output[2])
-    def write_colour_array(self) -> list:
-        return [int(256 * x) for x in self]
 
 class point3(vec3):
     pass
