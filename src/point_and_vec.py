@@ -4,9 +4,6 @@ import math
 import numpy as np
 from pydantic import BaseModel
 class base_vec3():
-    x: float
-    y: float
-    z: float
     def __init__(self, x,y,z) -> None:
         self.x = x
         self.y = y
@@ -20,16 +17,16 @@ class base_vec3():
         return [self.x,self.y,self.z]
     
     def __add__(self, other):
-        return vec3(self.x + other.x, self.y + other.y,self.z + other.z)
+        return self.__class__(self.x + other.x, self.y + other.y,self.z + other.z)
 
     def __sub__(self, other):
-        return vec3(self.x - other.x, self.y - other.y,self.z - other.z)
+        return self.__class__(self.x - other.x, self.y - other.y,self.z - other.z)
 
     def __mul__(self, other: float | int):
-        return vec3(self.x * other, self.y * other,self.z * other)
+        return self.__class__(self.x * other, self.y * other,self.z * other)
 
     def __truediv__(self, other: float | int):
-        return vec3(self.x / other, self.y / other,self.z / other)
+        return self.__class__(self.x / other, self.y / other,self.z / other)
 
     def __str__(self) -> str:
         return "%f %f %f" % (self.x,self.y,self.z)
@@ -52,9 +49,6 @@ class vec3(base_vec3):
     
     def unit_vector(self) :
         return self / self.norm()
-    
-    def to_color(self):
-        return color(self.x,self.y,self.z)
         
 class color(vec3):
     @classmethod

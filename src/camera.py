@@ -14,10 +14,6 @@ def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
     c = oc.dot(oc) - radius**2
     # find the number of solutions
     discriminant = b**2 - 4*a*c
-    # if a != np.dot(ray.direction_vec.as_list(),ray.direction_vec.as_list()):
-    #     raise ValueError("issue is with a")
-    # if b != np.dot(ray.direction_vec.as_list(),ray.direction_vec.as_list()):
-    #     raise ValueError("issue is with a")
     if (discriminant < 0):
         return -1.0
     else:
@@ -27,13 +23,11 @@ def ray_colour(r: ray) -> color:
     t = hit_sphere(point3(0,0,-1), 0.5, r)
     if (t > 0.0):
         N: vec3 = (r.at(t) - vec3(0,0,-1)).unit_vector()
-        return (vec3(N.x+1, N.y+1, N.z+1) * 0.5).to_color()
+        return color(N.x+1, N.y+1, N.z+1) * 0.5
     unit_direction = (r.direction_vec).unit_vector()
     a = 0.5*(unit_direction.y + 1.0)
     # Lerping between (255, 255, 255) which is white to a light shade blue (128, 255*0.7, 255)
-    a = (vec3(1.0, 1.0, 1.0)*(1.0-a) + vec3(0.5, 0.7, 1.0)*a).to_color()
-    return a
-    # return color(0,0,0)
+    return color(1.0, 1.0, 1.0)*(1.0-a) + color(0.5, 0.7, 1.0)*a
     
 def main():
     
