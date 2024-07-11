@@ -1,8 +1,6 @@
 # unit 3: the vec3 class
-import numpy as np
 import math
-import numpy as np
-from pydantic import BaseModel
+
 class base_vec3():
     def __init__(self, x,y,z) -> None:
         self.x = x
@@ -68,7 +66,7 @@ class color(vec3):
         return "%d %d %d\n" % (self.x*256,self.y*256,self.z*256)
     
     def write_colour_array(self) -> list:
-        return [int(256 * x) for x in self.as_list()]
+        return [self.x*256,self.y*256,self.z*256]
 
 class point3(vec3):
     pass

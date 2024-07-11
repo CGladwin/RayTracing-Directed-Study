@@ -6,11 +6,13 @@ import cProfile
 from numba import jit
 
 def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
-    # vector from center of sphere to camera
-    oc: vec3 = ray.origin_point - sphere_center
+    # vector from center of sphere to camera, used to declare where the sphere exists in virtual 3d space
+    # origin_to_center.dot(origin_to_center) == (Cx - x)^2 + (Cy - y)^2 + (Cz - z)^2 = r^2 
+    # In the above C is a point in space
+    oc: vec3 = sphere_center - ray.origin_point
     # coefficients in the equation at^2 + bt + c = 0, where t is the scalar multiple of the ray's direction in the equation P(t) = Q + td
     a = (ray.direction_vec).dot(ray.direction_vec) 
-    b = 2.0 * (ray.direction_vec).dot(oc)
+    b = -2.0 * (ray.direction_vec).dot(oc)
     c = oc.dot(oc) - radius**2
     # find the number of solutions
     discriminant = b**2 - 4*a*c
