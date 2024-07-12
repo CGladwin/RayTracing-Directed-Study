@@ -10,6 +10,10 @@ class base_vec3():
     @classmethod
     def from_list(cls,coordinates_list):
         return cls(coordinates_list[0],coordinates_list[1],coordinates_list[2])
+    
+    @classmethod
+    def from_vec3_like(cls,other):
+        return cls(other.x,other.y,other.z)
 
     def as_list(self):
         return [self.x,self.y,self.z]
@@ -45,17 +49,11 @@ class vec3(base_vec3):
     def dot(self, other) -> float:
         return (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
     
+    # returns vector of length 1
     def unit_vector(self) :
         return self / self.norm()
         
 class color(vec3):
-    @classmethod
-    def to_color(cls,base: vec3):
-        cls.x = base.x
-        cls.y = base.y
-        cls.z = base.z
-        return cls
-
     def __str__(self) -> str:
         return "%d %d %d\n" % (self.x*256,self.y*256,self.z*256)
     

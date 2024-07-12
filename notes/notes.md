@@ -81,4 +81,19 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
   - First, let’s get ourselves a surface normal so we can shade. This is a vector that is perpendicular to the surface at the point of intersection.
   - sphere normals can be made unit length simply by dividing by the sphere radius, avoiding the square root entirely.
   - in this project: we will adopt the policy that all normal vectors will be of unit length.
-  - 
+
+**Researching performance optimizations**
+[taken from this](https://ipython-books.github.io/chapter-5-high-performance-computing/)
+- Numba's Jit doesn't seem to be suitable for custom classes, its Jitclass doesn't allow for subtyping which clashes with the way I've structured the program
+- Cython on Windows is a headache. It's trivial to set up in Linux but a combination of my PC using Windows 11 and My Visual Studio Distribution being 2022 appears to create issues
+  - the specific issue I've ran into was the absence of an ISO.h file in a certain library
+- I do still want to run the for loops in a different language
+  - remaining ideas are to use CFFI or create java files and target the JVM
+- CTYPES WORKS
+  - downloaded MSYS2
+  - downloaded mingw32 from there
+  - set bin to PATH
+  - set c/c++ compiler path to use mingw32 in vscode
+  - gcc compiled c file to shared object file
+  - called c using ctypes library
+- possibly refactor code at listing 51 (when we reach shaded object), collaborating with others (refactoring wont require math knowledge, effectively just translating to C in a way that makes sense)

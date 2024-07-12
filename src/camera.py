@@ -3,7 +3,6 @@ from ray_class import *
 import os
 from PPM_image_output import *
 import cProfile
-from numba import jit
 
 def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
     # vector from center of sphere to camera, used to declare where the sphere exists in virtual 3d space
@@ -17,15 +16,26 @@ def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
     # find the number of solutions
     discriminant = b**2 - 4*a*c
     if (discriminant < 0):
+        # no solutions, ray doesn't hit sphere
         return -1.0
     else:
+        # return the smallest solution for t, which is the closes hit point to the ray origin
         return (-b - math.sqrt(discriminant)) / (2.0*a)
 
 def ray_colour(r: ray) -> color:
+    # define the sphere and check if it hit the ray in the param
     t = hit_sphere(point3(0,0,-1), 0.5, r)
+    # the sphere is in front of the camera for now
+    # so we aren't worrying about negative t values
     if (t > 0.0):
+        # r.at(t) = point on surface of sphere, facing camera
+        # vec3(0,0,-1) is a vector from the origin to the sphere's center
+        # N = the unit vector pointing normal to the surface of the sphere at point t
+        # unit vector values are between -1 and 1
         N: vec3 = (r.at(t) - vec3(0,0,-1)).unit_vector()
-        return color(N.x+1, N.y+1, N.z+1) * 0.5
+        # shift the values so that they're 0, 2, then 0 , 1
+        # equivalent to color.from_vec3_like((N + vec3(1,1,1)) /2)
+        return color(N.x+1,N.y+1,N.z+1) / 2
     unit_direction = (r.direction_vec).unit_vector()
     a = 0.5*(unit_direction.y + 1.0)
     # Lerping between (255, 255, 255) which is white to a light shade blue (128, 255*0.7, 255)
@@ -76,11 +86,9 @@ def main():
             for i in range(image_width):
                 # find each pixel in viewport by offsetting 0,0 based on pixel deltas
                 pixel_center = pixel00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
-                # print(pixel_center)
                 ray_direction = pixel_center - camera_center
                 r = ray(camera_center,ray_direction)
                 pixel_colour = ray_colour(r)
-                # print(pixel_colour.x)
                 f.write(pixel_colour.write_colour())
     print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
     view_ppm_img(output_ppm_path)
