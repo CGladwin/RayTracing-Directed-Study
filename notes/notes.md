@@ -58,9 +58,9 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
   - this can be refactored using the distributive property of vector algebra (the same as polynomial distribution)
     - `dot(-td,-td) + dot(-td,(C-Q)) + dot((C-Q),-td) + dot((C-Q),(C-Q)) = r^2`
   - pulling out the scalars:
-    -  `-t^2 * dot(d,d) + -t * dot(d,(C-Q)) + -t * dot((C-Q),d)  + dot((C-Q),(C-Q)) = r^2`
- -  note that the dot product is commutative `(dot(a,b) = dot(b,a))`:
-    -  `-t^2 * dot(d,d) + -2t * dot(d,(C-Q)) + dot((C-Q),(C-Q)) - r^2 = 0`
+    -  `-t * -t * dot(d,d) + -t * dot(d,(C-Q)) + -t * dot((C-Q),d)  + dot((C-Q),(C-Q)) = r^2`
+ -  note that the dot product is commutative `(dot(a,b) = dot(b,a))` (also bringing over r):
+    -  `t^2 * dot(d,d) + -2t * dot(d,(C-Q)) + dot((C-Q),(C-Q)) - r^2 = 0`
  -  the dot product calculations and r are all scalar and known, so the unknown we're solving for is t. From this lens, the equation is a quadratic equation. 
     -  The quadratic formula to solve `ax^2 +bx + c = 0` is:
        -  `(-b +/= sqrt(b^2 - 4ac)) / 2a`
@@ -81,3 +81,52 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
   - First, let’s get ourselves a surface normal so we can shade. This is a vector that is perpendicular to the surface at the point of intersection.
   - sphere normals can be made unit length simply by dividing by the sphere radius, avoiding the square root entirely.
   - in this project: we will adopt the policy that all normal vectors will be of unit length.
+
+**🐇 Researching performance optimizations**
+
+[taken from this](https://ipython-books.github.io/chapter-5-high-performance-computing/)
+- Numba's Jit doesn't seem to be suitable for custom classes, its Jitclass doesn't allow for subtyping which clashes with the way I've structured the program
+- Cython on Windows is a headache. It's trivial to set up in Linux but a combination of my PC using Windows 11 and My Visual Studio Distribution being 2022 appears to create issues
+  - the specific issue I've ran into was the absence of an ISO.h file in a certain library
+- I do still want to run the for loops in a different language
+  - remaining ideas are to use CFFI or create java files and target the JVM
+- CTYPES WORKS
+  - downloaded MSYS2
+  - downloaded mingw32 from there
+  - set bin to PATH
+  - set c/c++ compiler path to use mingw32 in vscode
+  - gcc compiled c file to shared object file
+  - called c using ctypes library
+- possibly refactor code at listing 51 (when we reach shaded object), collaborating with others (refactoring wont require math knowledge, effectively just translating to idiomatic C)
+  - use ctypes to rely on c for looping 
+
+**6.2 Simplifying the ray-sphere intersection code**
+- recall `dot(vec3,vec3) == vec3.length_squared()`
+  - the dot product will always be positive
+- recall  `b = -2 * dot(d,(C-Q))`
+- refactoring the quadratic formula, declaring `b = -2h` where `h = dot(d,(C-Q))`:
+  -  `(-(-2h) +/= sqrt((-2h)^2 - 4ac)) / 2a`
+  -  `(2h +/= sqrt(4(h^2 - ac)) / 2a`
+  -  `(2h +/= 2* sqrt(h^2 - ac)) / 2a`
+  -  `2*(h +/= sqrt(h^2 - ac)) / 2a`
+  -  `(h +/= sqrt(h^2 - ac)) / a`
+     -  therefore the descriminant is now `h^2 - a*c`
+
+**6.3 an abstraction for hittable objects**
+- Most ray tracers have found it convenient to add a valid interval for hits tmin to tmax so the hit only “counts” if tmin < t < tmax
+
+**6.4 Front vs Back Faces**
+- Currently, if the ray intersects the sphere from the inside (i.e. the second time the ray has hit that sphere), the normal (which always points out) points with the ray.
+- And if the ray intersects the sphere from the outside the normal points against the ray
+- we will eventually want to determine which side of the surface that the ray is coming from. 
+  - This is important for objects that are rendered differently on each side, e.g.:
+    -  the text on a two-sided sheet of paper
+    -  objects that have an inside and an outside, like glass balls.
+-  We can set things up so that normals always point “outward” from the surface, or always point against the incident ray
+   -  with the latter, the normals pointing with the ray will have to be flipped, and the information about the surface not facing the ray's origin will have to be stored
+      -  we will do this, though raytracer implememations go either way
+      -  reasoning: we have more material types than we have geometry types, so we'll go for less work and put the determination at geometry time
+
+**6.7 Common Constants and Utility Functions**
+- note the source code declares infinity and pi as constants, but for python we can use the existing declarations in the math library conveniently
+- we put the helper function degrees_to_radians() in camera.py for now
