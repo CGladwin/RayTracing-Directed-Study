@@ -7,13 +7,13 @@ import cProfile
 
 def ray_colour(r: ray, world: hittable) -> color:
     rec = hit_record()
-    world_output = world.hit(r, 0, math.inf, rec)
-    if world_output["hit_anything"]:
+    world_output = world.hit(r, interval(0, math.inf), rec)
+    if world_output:
         # normal vector on hit is assumed to be unit length
         # shift the normal vector components (which are between -1 and +1) so that they're between 0 and 2
         # then divide by 2 so they're between 0 and 1
         # this can then be multiplied by 265 to derive a color map based on normals
-        return (color(1,1,1) + world_output["rec"].normal ) / 2
+        return (color(1,1,1) + (world.rec).normal ) / 2
 
     unit_direction = (r.direction_vec).unit_vector()
     a = 0.5*(unit_direction.y + 1.0)

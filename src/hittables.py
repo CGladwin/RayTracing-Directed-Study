@@ -3,6 +3,24 @@ from point_and_vec import *
 from ray_class import *
 from abc import ABC, abstractmethod
 
+# class to manage intervals of floats
+class interval():
+    def __init__(self, min: float,max: float) -> None:
+        self.min = min
+        self.max = max
+    
+    def size(self):
+        return self.max - self.min
+    
+    def contains(self,x: float):
+        return self.min <= x and x <= self.max
+    
+    def surrounds(self,x: float):
+        return self.min < x and x < self.max
+
+empty = interval(math.inf,-math.inf)
+universe = interval(-math.inf,math.inf)
+
 class hit_record():
     def __init__(self) -> None:
         pass
@@ -18,7 +36,7 @@ class hit_record():
 
 class hittable(ABC):
     @abstractmethod
-    def hit(r: ray, ray_tmin: float, ray_tmax: float, rec:  hit_record) -> bool:
+    def hit(r: ray, ray_t: interval, rec:  hit_record) -> bool:
         pass
 
 class hittables_list(hittable):
@@ -28,23 +46,23 @@ class hittables_list(hittable):
     def add(self,object: hittable) -> None:
         self.objects_list.append(object)
     
-    def hit(self,r: ray, ray_tmin: float,ray_tmax: float, rec: hit_record) -> bool:
+    def hit(self,r: ray, ray_t: interval, rec: hit_record) -> bool:
         temp_rec = hit_record()
         hit_anything = False
-        closest_so_far = ray_tmax
+        closest_so_far = ray_t.max
         for object in self.objects_list:
-            if object.hit(r, ray_tmin, closest_so_far, temp_rec):
+            if object.hit(r, interval(ray_t.min, closest_so_far), temp_rec):
                 hit_anything = True
                 closest_so_far = temp_rec.t
-                rec = temp_rec
-        return {"hit_anything":hit_anything,"rec":temp_rec}
+                self.rec = temp_rec
+        return hit_anything
 
 class sphere(hittable):
     def __init__(self,center: point3,radius: float) -> None:
         self.center = center
         self.radius = max(0,radius)
 
-    def hit(self,r: ray, ray_tmin: float,ray_tmax: float, rec: hit_record) -> bool:
+    def hit(self,r: ray, ray_t: interval, rec: hit_record) -> bool:
         # vector from center of sphere to camera, used to declare where the sphere exists in virtual 3d space
         # origin_to_center.dot(origin_to_center) == (Cx - x)^2 + (Cy - y)^2 + (Cz - z)^2 = r^2 
         # In the above C is a point in space, the other components are the coords of the center of the sphere
@@ -65,9 +83,9 @@ class sphere(hittable):
         sqrtd = math.sqrt(discriminant)
         # Find the nearest root that lies in the acceptable range.
         root = (h - sqrtd) / a
-        if (root <= ray_tmin or ray_tmax <= root):
+        if (ray_t.surrounds(root) == False):
             root = (h + sqrtd) / a
-            if (root <= ray_tmin or ray_tmax <= root):
+            if (ray_t.surrounds(root) == False):
                 return False
 
         # note: unit vector values are between -1 and 1
