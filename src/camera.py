@@ -1,46 +1,28 @@
+from hittables import *
 from point_and_vec import *
 from ray_class import *
 import os
 from PPM_image_output import *
 import cProfile
 
-def hit_sphere(sphere_center: point3, radius: float, ray: ray) -> float:
-    # vector from center of sphere to camera, used to declare where the sphere exists in virtual 3d space
-    # origin_to_center.dot(origin_to_center) == (Cx - x)^2 + (Cy - y)^2 + (Cz - z)^2 = r^2 
-    # In the above C is a point in space
-    oc: vec3 = sphere_center - ray.origin_point
-    # coefficients in the equation at^2 + bt + c = 0, where t is the scalar multiple of the ray's direction in the equation P(t) = Q + td
-    a = (ray.direction_vec).dot(ray.direction_vec) 
-    b = -2.0 * (ray.direction_vec).dot(oc)
-    c = oc.dot(oc) - radius**2
-    # find the number of solutions
-    discriminant = b**2 - 4*a*c
-    if (discriminant < 0):
-        # no solutions, ray doesn't hit sphere
-        return -1.0
-    else:
-        # return the smallest solution for t, which is the closes hit point to the ray origin
-        return (-b - math.sqrt(discriminant)) / (2.0*a)
+def ray_colour(r: ray, world: hittable) -> color:
+    rec = hit_record()
+    world_output = world.hit(r, 0, math.inf, rec)
+    if world_output["hit_anything"]:
+        # normal vector on hit is assumed to be unit length
+        # shift the normal vector components (which are between -1 and +1) so that they're between 0 and 2
+        # then divide by 2 so they're between 0 and 1
+        # this can then be multiplied by 265 to derive a color map based on normals
+        return (color(1,1,1) + world_output["rec"].normal ) / 2
 
-def ray_colour(r: ray) -> color:
-    # define the sphere and check if it hit the ray in the param
-    t = hit_sphere(point3(0,0,-1), 0.5, r)
-    # the sphere is in front of the camera for now
-    # so we aren't worrying about negative t values
-    if (t > 0.0):
-        # r.at(t) = point on surface of sphere, facing camera
-        # vec3(0,0,-1) is a vector from the origin to the sphere's center
-        # N = the unit vector pointing normal to the surface of the sphere at point t
-        # unit vector values are between -1 and 1
-        N: vec3 = (r.at(t) - vec3(0,0,-1)).unit_vector()
-        # shift the values so that they're 0, 2, then 0 , 1
-        # equivalent to color.from_vec3_like((N + vec3(1,1,1)) /2)
-        return color(N.x+1,N.y+1,N.z+1) / 2
     unit_direction = (r.direction_vec).unit_vector()
     a = 0.5*(unit_direction.y + 1.0)
     # Lerping between (255, 255, 255) which is white to a light shade blue (128, 255*0.7, 255)
     return color(1.0, 1.0, 1.0)*(1.0-a) + color(0.5, 0.7, 1.0)*a
-    
+
+def degrees_to_radians(degrees: float):
+    return degrees * math.pi / 180.0
+
 def main():
     
     aspect_ratio = 16.0 / 9.0 #ideal ratio
@@ -74,7 +56,10 @@ def main():
     pixel00_loc: vec3 = viewport_upper_left + (pixel_delta_u + pixel_delta_v)/2
     # find the top-left aka first pixel
 
-
+    world = hittables_list([])
+    world.add(sphere(point3(0,0,-1),0.5))
+    world.add(sphere(point3(0,-100.5,-1),100))
+    
     # Render
     output_ppm_dir: str = "images"
     output_ppm_path = os.path.abspath(output_ppm_dir)+'\\first_camera_image.ppm'
@@ -88,7 +73,7 @@ def main():
                 pixel_center = pixel00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
                 ray_direction = pixel_center - camera_center
                 r = ray(camera_center,ray_direction)
-                pixel_colour = ray_colour(r)
+                pixel_colour = ray_colour(r,world)
                 f.write(pixel_colour.write_colour())
     print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
     view_ppm_img(output_ppm_path)
