@@ -3,24 +3,6 @@ from point_and_vec import *
 from ray_class import *
 from abc import ABC, abstractmethod
 
-# class to manage intervals of floats
-class interval():
-    def __init__(self, min: float,max: float) -> None:
-        self.min = min
-        self.max = max
-    
-    def size(self):
-        return self.max - self.min
-    
-    def contains(self,x: float):
-        return self.min <= x and x <= self.max
-    
-    def surrounds(self,x: float):
-        return self.min < x and x < self.max
-
-empty = interval(math.inf,-math.inf)
-universe = interval(-math.inf,math.inf)
-
 class hit_record():
     def __init__(self) -> None:
         pass
@@ -28,11 +10,12 @@ class hit_record():
     def set_face_normal(self,r: ray, outward_normal: vec3) -> None:
         # Sets the hit record normal vector.
         # NOTE: the parameter `outward_normal` is assumed to have unit length.
-        self.front_face = (r.direction_vec).dot(outward_normal) < 0
+        self.front_face: bool = (r.direction_vec).dot(outward_normal) < 0
         if self.front_face:
             self.normal = outward_normal
             return
-        self.front_face = outward_normal * -1
+        else:
+            self.normal = outward_normal * -1
 
 class hittable(ABC):
     @abstractmethod

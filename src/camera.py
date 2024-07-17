@@ -6,9 +6,10 @@ from PPM_image_output import *
 import cProfile
 
 class  camera():
-    def __init__(self, aspect_ratio: float, image_width: float) -> None:
+    def __init__(self, aspect_ratio: float, image_width: int, samples_per_pixel: int) -> None:
         self.aspect_ratio = aspect_ratio
         self.image_width = image_width
+        self.samples_per_pixel = samples_per_pixel
     
     def initialize(self) -> None:
         # Calculate the image height, and ensure that it's at least 1.
@@ -16,6 +17,7 @@ class  camera():
         if self.image_height < 1: 
             self.image_height = 1
         viewport_height = 2.0
+        self.pixel_sample_scale = 1/self.samples_per_pixel
         integer_ratio = self.image_width/self.image_height
         viewport_width = viewport_height * integer_ratio
 
@@ -47,15 +49,28 @@ class  camera():
             for j in range(self.image_height):
                 progress_indicator("scanlines remaining: ",self.image_height,self.image_height-j)
                 for i in range(self.image_width):
-                    # find each pixel in viewport by offsetting 0,0 based on pixel deltas
-                    pixel_center = self.pixel00_loc + (self.pixel_delta_u * i) + (self.pixel_delta_v * j)
-                    ray_direction = pixel_center - self.camera_center
-                    r = ray(self.camera_center,ray_direction)
-                    pixel_colour = self.ray_colour(r,world)
+                    pixel_colour = color(0,0,0)
+                    for sample in range(self.samples_per_pixel):
+                        r = self.get_ray(i,j)
+                        pixel_colour+=self.ray_colour(r,world)
+                    pixel_colour *= self.pixel_sample_scale
                     f.write(pixel_colour.write_colour())
         print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
-        view_ppm_img(output_ppm_path)
+        view_ppm_img(output_ppm_path,"antialiasing")
+    
+    def get_ray(self,i: int, j: int) -> ray:
+        # construct a camera ray from origin directed at random point around pixel i,j
+        offset = self.sample_square()
+        # find each pixel in viewport by offsetting 0,0 based on pixel deltas
+        pixel_sample = self.pixel00_loc + (self.pixel_delta_u * (i + offset.x)) + (self.pixel_delta_v * (j + offset.y))
+        ray_origin = self.camera_center
+        ray_direction = pixel_sample - ray_origin
+        return ray(ray_origin,ray_direction)
 
+    @staticmethod
+    def sample_square():
+        return vec3(np.random.rand() - 0.5,np.random.rand() - 0.5, 0)
+    
     @staticmethod
     def ray_colour(r: ray, world: hittable) -> color:
         rec = hit_record()
@@ -77,7 +92,7 @@ def degrees_to_radians(degrees: float):
 
 def main():
     #ideal aspect ratio is 16.0 / 9.0
-    cam = camera(aspect_ratio=16.0 / 9.0 , image_width=400)
+    cam = camera(aspect_ratio=16.0 / 9.0 , image_width=400, samples_per_pixel=10)
 
     world = hittables_list([])
     world.add(sphere(point3(0,0,-1),0.5))

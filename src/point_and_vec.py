@@ -1,6 +1,31 @@
 # unit 3: the vec3 class
 import math
 
+# class to manage intervals of floats
+class interval():
+    def __init__(self, min: float,max: float) -> None:
+        self.min = min
+        self.max = max
+    
+    def size(self):
+        return self.max - self.min
+    
+    def contains(self,x: float):
+        return self.min <= x and x <= self.max
+    
+    def surrounds(self,x: float):
+        return self.min < x and x < self.max
+    
+    def clamp(self,x: float):
+        if x < self.min:
+            return self.min
+        if x > self.max:
+            return self.max
+        return x
+
+empty = interval(math.inf,-math.inf)
+universe = interval(-math.inf,math.inf)
+
 class base_vec3():
     def __init__(self, x,y,z) -> None:
         self.x = x
@@ -61,7 +86,10 @@ class color(vec3):
         # note: original write_colour function sends string to output
         # python convention is to enclose file writing in the with open() context so it seems more scalable to return a string instead
         # output = int(np.average(rgb_byte_output))
-        return "%d %d %d\n" % (self.x*256,self.y*256,self.z*256)
+        intensity = interval(0,0.999)
+        return "%d %d %d\n" % (intensity.clamp(self.x)*256,
+                               intensity.clamp(self.y)*256,
+                               intensity.clamp(self.z)*256)
     
     def write_colour_array(self) -> list:
         return [self.x*256,self.y*256,self.z*256]

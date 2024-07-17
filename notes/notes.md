@@ -130,3 +130,37 @@ At its core, a ray tracer sends rays through pixels and computes the color seen 
 **6.7 Common Constants and Utility Functions**
 - note the source code declares infinity and pi as constants, but for python we can use the existing declarations in the math library conveniently
 - we put the helper function degrees_to_radians() in camera.py for now
+- I've realized I should be including screenshots of progress. Here is the current state of the rendered scene.
+
+![alt text](image5.png)
+
+**8 antialiasing**
+- aliasing is the harsh "stair step" edges between objects in our picture. 
+- Real pictures don't have aliasing because the edges are a blend of the foreground and background
+  - We get this effect by averaging samples for each pixel
+- currently, we're shooting a single ray through the center of each pixel, aka *point sampling*
+  - problem scenario: 
+    - if a checkerboard is far away, this may result in only a few rays hitting it. These rays may all hit the same tile and render the checkerboard as being all black or all white.
+    - IRL, our eyes would percieve a checkerboard far away as being gray
+- solution: change approach to sample the square region centered at the pixel, extending halfway to each of the 4 neighbouring pixels
+
+**8.1 random number utilities**
+I'll use math.random
+
+![zoomed in picture to demonstrate antialiasing works](image6.png)
+
+![zoomed out, antialiased picture](image6_2.png)
+
+**9 diffuse materials**
+- diffuse materials are also called matte
+- we will separate geometry from materials, but some other approaches tightly bind them (e.g. to make procedural objects)
+- Diffuse objects that don't emit their own light take on their surroundings' colours, modulated with their own intrinsic colour
+- Light reflecting off a diffuse surface has its direction randomized
+  - light is potentially absorbed, creating dark surfaces; assigning a higher likelihood of this creates a darker surface
+- our first material will randomly bounce a ray equally in all directions away from the surface
+  - the collection of possible vectors for the bounce appear as a hemisphere centered at the point of contact P
+  - we will use a naive rejection method to do this; if we get a result that doesn't match, we reject it
+- steps:
+  1. generate vector from unit cube centered around point of contact P. If it lies within unit sphere, accept it, otherwise try again
+  2. once you have a vector within the unit sphere, normalize it so that it is unit length
+  3. If it is in the wrong hemisphere centered around p, flip it 
