@@ -164,3 +164,5 @@ I'll use math.random
   1. generate vector from unit cube centered around point of contact P. If it lies within unit sphere, accept it, otherwise try again
   2. once you have a vector within the unit sphere, normalize it so that it is unit length
   3. If it is in the wrong hemisphere centered around p, flip it 
+
+![diffuse material](image7.png)

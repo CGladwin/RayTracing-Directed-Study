@@ -70,14 +70,14 @@ class sphere(hittable):
             root = (h + sqrtd) / a
             if (ray_t.surrounds(root) == False):
                 return False
-
+        self.rec = rec
         # note: unit vector values are between -1 and 1
-        rec.t = root
+        self.rec.t = root
         # get point on surface of sphere (may or may not be facing camera)
-        rec.p = r.at(rec.t) 
+        self.rec.p = r.at(rec.t) 
         # find the unit vector pointing normal to the surface of the sphere at point t
         outward_normal: vec3 = (rec.p - self.center) / self.radius
         # if the normal is in the same direction as the ray, flip its direction
-        rec.set_face_normal(r, outward_normal)
+        self.rec.set_face_normal(r, outward_normal)
 
         return True

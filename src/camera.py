@@ -41,9 +41,9 @@ class  camera():
         self.pixel00_loc: vec3 = viewport_upper_left + (self.pixel_delta_u + self.pixel_delta_v)/2
         # find the top-left aka first pixel
 
-    def render(self,world: hittable,output_ppm_dir: str = "images"):
+    def render(self,world: hittable,image_name: str, output_ppm_dir: str = "images"):
         self.initialize()
-        output_ppm_path = os.path.abspath(output_ppm_dir)+'\\first_camera_image.ppm'
+        output_ppm_path = os.path.abspath(output_ppm_dir)+'\\%s.ppm' % (image_name)
         with open(output_ppm_path,"w+") as f:
             f.write("P3\n%d %d\n255\n" % (self.image_width,self.image_height))
             for j in range(self.image_height):
@@ -56,7 +56,7 @@ class  camera():
                     pixel_colour *= self.pixel_sample_scale
                     f.write(pixel_colour.write_colour())
         print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
-        view_ppm_img(output_ppm_path,"antialiasing")
+        view_ppm_img(output_ppm_path,image_name)
     
     def get_ray(self,i: int, j: int) -> ray:
         # construct a camera ray from origin directed at random point around pixel i,j
@@ -71,16 +71,17 @@ class  camera():
     def sample_square():
         return vec3(np.random.rand() - 0.5,np.random.rand() - 0.5, 0)
     
-    @staticmethod
-    def ray_colour(r: ray, world: hittable) -> color:
+    def ray_colour(self,r: ray, world: hittable) -> color:
         rec = hit_record()
         world_output = world.hit(r, interval(0, math.inf), rec)
         if world_output:
+            temp_rec = world.rec
+            direction = vec3.random_on_hemisphere(temp_rec.normal)
             # normal vector on hit is assumed to be unit length
             # shift the normal vector components (which are between -1 and +1) so that they're between 0 and 2
             # then divide by 2 so they're between 0 and 1
             # this can then be multiplied by 265 to derive a color map based on normals
-            return (color(1,1,1) + (world.rec).normal ) / 2
+            return self.ray_colour(ray(temp_rec.p,direction),world) /2 
 
         unit_direction = (r.direction_vec).unit_vector()
         a = 0.5*(unit_direction.y + 1.0)
@@ -97,7 +98,7 @@ def main():
     world = hittables_list([])
     world.add(sphere(point3(0,0,-1),0.5))
     world.add(sphere(point3(0,-100.5,-1),100))
-    cam.render(world)
+    cam.render(world,'diffuse_material')
 
 if __name__ == "__main__":
     # for profiling code

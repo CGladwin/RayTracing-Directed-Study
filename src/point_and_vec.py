@@ -91,14 +91,15 @@ class vec3(base_vec3):
     def random_in_unit_sphere():
         while True:
             p = vec3.from_rand_range(-1,1)
-            if p.length_squared() < -1:
+            if p.length_squared() < 1:
                 return p
-            
-    def random_unit_vector(self):
-        return self.unit_vector(vec3.random_in_unit_sphere())
+    @classmethod      
+    def random_unit_vector(cls):
+        return cls.unit_vector(vec3.random_in_unit_sphere())
     
-    def random_on_hemisphere(self,normal):
-        on_unit_sphere = self.random_unit_vector()
+    @classmethod
+    def random_on_hemisphere(cls,normal):
+        on_unit_sphere = cls.random_unit_vector()
         if on_unit_sphere.dot(normal) > 0:
             return on_unit_sphere
         else:
