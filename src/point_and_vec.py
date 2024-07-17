@@ -1,5 +1,6 @@
 # unit 3: the vec3 class
 import math
+import numpy as np
 
 # class to manage intervals of floats
 class interval():
@@ -39,6 +40,14 @@ class base_vec3():
     @classmethod
     def from_vec3_like(cls,other):
         return cls(other.x,other.y,other.z)
+    
+    @classmethod
+    def from_random(cls):
+        return cls(np.random.rand(),np.random.rand(),np.random.rand())
+    
+    @classmethod
+    def from_rand_range(cls,max,min):
+        return cls(np.random.uniform(max,min),np.random.uniform(max,min),np.random.uniform(max,min))
 
     def as_list(self):
         return [self.x,self.y,self.z]
@@ -77,6 +86,23 @@ class vec3(base_vec3):
     # returns vector of length 1
     def unit_vector(self) :
         return self / self.norm()
+    
+    @staticmethod
+    def random_in_unit_sphere():
+        while True:
+            p = vec3.from_rand_range(-1,1)
+            if p.length_squared() < -1:
+                return p
+            
+    def random_unit_vector(self):
+        return self.unit_vector(vec3.random_in_unit_sphere())
+    
+    def random_on_hemisphere(self,normal):
+        on_unit_sphere = self.random_unit_vector()
+        if on_unit_sphere.dot(normal) > 0:
+            return on_unit_sphere
+        else:
+            return on_unit_sphere * -1
         
 class color(vec3):
     def __str__(self) -> str:
