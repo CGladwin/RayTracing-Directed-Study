@@ -23,7 +23,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         ppm_file_path = sys.argv[1]
     else:
-        ppm_file_path = "src/images/rgb_image.ppm"
+        ppm_file_path = "src/images/first_image.ppm"
     view_ppm_img(ppm_file_path,"first image")
     # print(timeit.timeit('hello_world_ppm_optimized("images")','from __main__ import hello_world_ppm_optimized',number=100))
     # print(timeit.timeit('hello_world_ppm("images")','from __main__ import hello_world_ppm',number=100))
