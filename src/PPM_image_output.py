@@ -2,7 +2,6 @@
 import os
 import cv2
 import matplotlib.pyplot as plt
-from point_and_vec import color
 import math
 import numpy as np
 import timeit
