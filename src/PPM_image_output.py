@@ -1,10 +1,6 @@
 # Unit 2: Output an Image
-import os
 import cv2
 import matplotlib.pyplot as plt
-import math
-import numpy as np
-import timeit
 import sys
 
 """TODO: 
