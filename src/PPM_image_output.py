@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 import timeit
+import sys
+
 """TODO: 
 - set up venv
 - set up git repo
@@ -22,7 +24,10 @@ def view_ppm_img(img_path: str, img_title:str):
     plt.show()
 
 if __name__ == "__main__":
-    ppm_path = "src/images/rgb_image.ppm"
-    view_ppm_img(ppm_path,"first image")
+    if len(sys.argv) >= 2:
+        ppm_file_path = sys.argv[1]
+    else:
+        ppm_file_path = "src/images/rgb_image.ppm"
+    view_ppm_img(ppm_file_path,"first image")
     # print(timeit.timeit('hello_world_ppm_optimized("images")','from __main__ import hello_world_ppm_optimized',number=100))
     # print(timeit.timeit('hello_world_ppm("images")','from __main__ import hello_world_ppm',number=100))
