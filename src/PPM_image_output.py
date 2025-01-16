@@ -29,24 +29,6 @@ def progress_indicator(base_text: str,start_value: int,current_value: int) -> No
     spaces_necessary = get_digits(start_value)-get_digits(current_value)
     print("\r%s%d" % (base_text,current_value)+" "*spaces_necessary,end="",flush=True)
 
-def hello_world_ppm(output_ppm_dir: str = ".",
-                    image_width: int = 256,
-                    image_height: int = 256) -> str:
-    """generates PPM file, sent to directory given in param, returns path"""
-    appendlist = []
-    output_ppm_path = os.path.join(output_ppm_dir,'rgb_image.ppm')
-    with open(output_ppm_path,"w+") as f:
-        f.write("P3\n%d %d\n255\n" % (image_width,image_height))
-        for j in range(image_height):
-            progress_indicator("scanlines remaining: ",image_height,image_height-j)
-            for i in range(image_width):
-                rgb = [i/(image_width-1),j/(image_height-1),0]
-                pixel_colour = color(i/(image_width-1),j/(image_height-1),0)
-                f.write(pixel_colour.write_colour())
-                appendlist.append(pixel_colour)
-        print("\nDone.") #newline necessary because output stream after progress_indicator call is pointing to end of previous line, not newline
-    return output_ppm_path
-
 def view_ppm_img(img_path: str, img_title:str):
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
@@ -55,7 +37,7 @@ def view_ppm_img(img_path: str, img_title:str):
     plt.show()
 
 if __name__ == "__main__":
-    ppm_path = hello_world_ppm("src/images")
+    ppm_path = "src/images/rgb_image.ppm"
     view_ppm_img(ppm_path,"first image")
     # print(timeit.timeit('hello_world_ppm_optimized("images")','from __main__ import hello_world_ppm_optimized',number=100))
     # print(timeit.timeit('hello_world_ppm("images")','from __main__ import hello_world_ppm',number=100))
