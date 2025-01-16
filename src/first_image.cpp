@@ -4,10 +4,9 @@
 #include <filesystem>
 #include <vector>
 
-int main() {
-
-    // ofstream is used for writing files
-    std::ofstream output_file{ "images/first_image.ppm" };
+int main(){
+    
+    std::ofstream output_file{"src/images/first_image.ppm"};
 
     // If we couldn't open the output file stream for writing
     if (!output_file)
