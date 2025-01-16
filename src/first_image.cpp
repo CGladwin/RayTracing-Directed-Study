@@ -4,13 +4,18 @@
 #include <filesystem>
 #include <vector>
 
-int main(){
-    
-    std::ofstream output_file{"src/images/first_image.ppm"};
+int main(int argc, char* argv[]){ 
+
+    // Check if the user provided a path to the PPM file 
+    if (argc < 2) { 
+        std::cerr << "Usage: " << argv[0] << " <output_file_path>\n"; 
+        return 1; 
+    } 
+    std::string output_file_path = argv[1];
+    std::ofstream output_file{output_file_path}; 
 
     // If we couldn't open the output file stream for writing
-    if (!output_file)
-    {
+    if (!output_file) {
         // Print an error and exit
         std::cerr << "file could not be opened for writing!\n";
         return 1;

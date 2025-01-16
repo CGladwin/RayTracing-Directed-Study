@@ -11,7 +11,7 @@ def compile_and_run_cpp(src_dir,cpp_file_path):
     run(f"g++ {joined_dir}.cpp -o {joined_dir}")
     
     # Execute the compiled program
-    run(f"./{joined_dir}")
+    run(f"./{joined_dir} {src_dir}/images/{cpp_file_path}.ppm")
 
 def run_python_script(py_file_path):
     # Run the Python script
