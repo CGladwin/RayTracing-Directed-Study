@@ -4,7 +4,6 @@ import subprocess
 def run(command):
     subprocess.run(command, shell=True, check=True)
 
-
 def compile_and_run_cpp(src_dir,cpp_file_path):
     joined_dir = os.path.join(src_dir,cpp_file_path)
     # Compile the C++ program
