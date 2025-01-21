@@ -12,9 +12,9 @@ def compile_and_run_cpp(src_dir,cpp_file_path):
     # Execute the compiled program
     run(f"./{joined_dir} {src_dir}/images/{cpp_file_path}.ppm")
 
-def run_python_script(py_file_path):
+def run_python_script(py_file_path,cpp_file):
     # Run the Python script
-    run(f"env/bin/python {py_file_path}.py")
+    run(f"env/bin/python {py_file_path}.py src/images/{cpp_file}.ppm")
 
 def delete_executables(src_dir = "src"):
     # Delete all executables in the src directory
@@ -25,8 +25,8 @@ def delete_executables(src_dir = "src"):
 
 if __name__ == "__main__":
     src_dir = "src"
-    cpp_file = "first_image"
+    cpp_file = "main_test"
     py_file = "PPM_image_output"
     compile_and_run_cpp(src_dir,cpp_file)
-    run_python_script(os.path.join(src_dir,py_file))
+    run_python_script(os.path.join(src_dir,py_file),cpp_file)
     delete_executables()
