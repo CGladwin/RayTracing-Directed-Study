@@ -22,6 +22,16 @@ class hittable_list : public hittable {
         objects.push_back(object);
     }
 
+    /**
+     * @brief base class method for hit
+     * 
+     * @param r 
+     * @param ray_tmin 
+     * @param ray_tmax 
+     * @param rec 
+     * @return true 
+     * @return false 
+     */
     bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const override {
         hit_record temp_rec;
         bool hit_anything = false;

@@ -37,6 +37,16 @@ color ray_color(const ray& r, const hittable& world) {
 // auto render() {
 
 // Function to create output file stream
+
+/**
+ * @brief Create a output fstream object
+ * 
+ * @param argc 
+ * @param argv 
+ * @param image_width 
+ * @param image_height 
+ * @return std::ofstream 
+ */
 std::ofstream create_output_fstream(int &argc, char* argv[], int image_width = 256, int image_height = 256) {
     // Check if the user provided a path to the PPM file
     if (argc < 2) {

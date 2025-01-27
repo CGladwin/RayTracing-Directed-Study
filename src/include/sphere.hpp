@@ -8,6 +8,17 @@ class sphere : public hittable {
   public:
     sphere(const point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {}
 
+    /**
+     * @brief uses ray sphere intersection formula to determine if sphere has been hit by ray-cast
+     * 
+     * @param r 
+     * @param ray_tmin 
+     * @param ray_tmax 
+     * @param rec 
+     * @return true 
+     * @return false 
+     */
+    //!doxygen test
     bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const override {
         vec3 oc = center - r.origin();
         auto a = r.direction().length_squared();
