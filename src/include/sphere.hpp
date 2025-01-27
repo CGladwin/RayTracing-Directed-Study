@@ -1,20 +1,44 @@
+#ifndef SPHERE_H
+#define SPHERE_H
+
+#include "hittable.hpp"
 #include "vec3.hpp"
-struct Sphere {
-    vec3 center;
-    float radius;
 
-    Sphere(const vec3 &c, const float &r) : center(c), radius(r) {}
+class sphere : public hittable {
+  public:
+    sphere(const point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {}
 
-    bool ray_intersect(const vec3 &orig, const vec3 &dir, float &t0) const {
-        vec3 L = center - orig;
-        float tca = L*dir;
-        float d2 = L*L - tca*tca;
-        if (d2 > radius*radius) return false;
-        float thc = sqrtf(radius*radius - d2);
-        t0       = tca - thc;
-        float t1 = tca + thc;
-        if (t0 < 0) t0 = t1;
-        if (t0 < 0) return false;
+    bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const override {
+        vec3 oc = center - r.origin();
+        auto a = r.direction().length_squared();
+        auto h = dot(r.direction(), oc);
+        auto c = oc.length_squared() - radius*radius;
+
+        auto discriminant = h*h - a*c;
+        if (discriminant < 0)
+            return false;
+
+        auto sqrtd = std::sqrt(discriminant);
+
+        // Find the nearest root that lies in the acceptable range.
+        auto root = (h - sqrtd) / a;
+        if (root <= ray_tmin || ray_tmax <= root) {
+            root = (h + sqrtd) / a;
+            if (root <= ray_tmin || ray_tmax <= root)
+                return false;
+        }
+
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        vec3 outward_normal = (rec.p - center) / radius;
+        rec.set_face_normal(r, outward_normal);
+
         return true;
     }
+
+  private:
+    point3 center;
+    double radius;
 };
+
+#endif
