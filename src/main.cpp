@@ -7,6 +7,7 @@
 #include "include/hittable_list.hpp"
 #include "include/sphere.hpp"
 #include <concepts>
+#include "stb_image.h"
 
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
