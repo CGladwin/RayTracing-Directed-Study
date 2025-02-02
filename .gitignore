@@ -35,5 +35,8 @@
 *.out
 *.app
 
-# PPM files
+# image files
 *.ppm
+*.png
+
+# 
