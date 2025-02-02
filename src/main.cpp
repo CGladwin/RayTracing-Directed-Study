@@ -7,7 +7,9 @@
 #include "include/hittable_list.hpp"
 #include "include/sphere.hpp"
 #include <concepts>
-#include "stb_image.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "include/my_stb_image.h"
 
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
@@ -76,15 +78,17 @@ int main(int argc, char* argv[]) {
     int image_height = int(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
 
-    // World
+    // vector for png output
+    std::vector<u_int8_t> pixels = {};
+    pixels.reserve(image_width * image_height * 3);
 
+    // World
     hittable_list world;
 
     world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
     world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
     // Camera
-
     auto focal_length = 1.0;
     auto viewport_height = 2.0;
     auto viewport_width = viewport_height * (double(image_width)/image_height);
@@ -114,8 +118,14 @@ int main(int argc, char* argv[]) {
             ray r(camera_center, ray_direction);
 
             color pixel_color = ray_color(r, world);
-            write_color(output_file, pixel_color);
+            write_color(pixels, pixel_color);
         }
     }
+
+    if (!stbi_write_png("images/output.png", image_width, image_height, /* RGB */ 3, pixels.data(), image_width * 3)) {
+        throw_line("failed to write PNG file");
+    }
+
     std::clog << "\rDone.                 \n";
+
 }
