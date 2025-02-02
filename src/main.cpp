@@ -6,9 +6,18 @@
 #include "include/hittable.hpp"
 #include "include/hittable_list.hpp"
 #include "include/sphere.hpp"
-#include <concepts>
-#include "stb_image.h"
+#include "include/my_stb_image.h"
 
+/**
+ * @brief calculates if ray hit sphere
+ * 
+ * uses ray-sphere intersection formula
+ * 
+ * @param center 
+ * @param radius 
+ * @param r 
+ * @return double 
+ */
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
     auto a = dot(r.direction(), r.direction());
@@ -23,6 +32,17 @@ double hit_sphere(const point3& center, double radius, const ray& r) {
     }
 }
 
+/**
+ * @brief returns rgb for pixel color value
+ * 
+ * if sphere is not hit, color is based on a a predefined gradient
+ * 
+ * if sphere is hit, color is based on surface normals (not a real texture)
+ * 
+ * @param r 
+ * @param world 
+ * @return color 
+ */
 color ray_color(const ray& r, const hittable& world) {
     hit_record rec;
     if (world.hit(r, 0, infinity, rec)) {
@@ -34,41 +54,8 @@ color ray_color(const ray& r, const hittable& world) {
     return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
 }
 
-// TODO: refactor to have output stream be like tiny-raytracer
-// auto render() {
-
-// Function to create output file stream
-
-/**
- * @brief Create a output fstream object
- * 
- * @param argc 
- * @param argv 
- * @param image_width 
- * @param image_height 
- * @return std::ofstream 
- */
-std::ofstream create_output_fstream(int &argc, char* argv[], int image_width = 256, int image_height = 256) {
-    // Check if the user provided a path to the PPM file
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <output_file_path>\n";
-        throw_line("incorrect command line arguments");
-    }
-
-    std::ofstream output_file{argv[1]};
-    if (!output_file) {
-        std::cerr << "file could not be opened for writing!\n";
-        throw_line("file could not be opened for writing");
-    }
-    
-    output_file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-    return output_file;
-}
-
 int main(int argc, char* argv[]) {
-    
     // Image
-
     auto aspect_ratio = 16.0 / 9.0;
     int image_width = 400;
 
@@ -76,15 +63,17 @@ int main(int argc, char* argv[]) {
     int image_height = int(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
 
-    // World
+    // vector for png output
+    std::vector<u_int8_t> pixels = {};
+    pixels.reserve(image_width * image_height * 3);
 
+    // World
     hittable_list world;
 
     world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
     world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
     // Camera
-
     auto focal_length = 1.0;
     auto viewport_height = 2.0;
     auto viewport_width = viewport_height * (double(image_width)/image_height);
@@ -103,9 +92,6 @@ int main(int argc, char* argv[]) {
                              - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
     auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
-    std::ofstream output_file = create_output_fstream(argc, argv,image_width,image_height);
-    
-
     for (int j = 0; j < image_height; j++) {
         std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
         for (int i = 0; i < image_width; i++) {
@@ -114,8 +100,23 @@ int main(int argc, char* argv[]) {
             ray r(camera_center, ray_direction);
 
             color pixel_color = ray_color(r, world);
-            write_color(output_file, pixel_color);
+            write_color(pixels, pixel_color);
         }
     }
-    std::clog << "\rDone.                 \n";
+
+    const char* output_path;
+    if (argc < 2) {
+        output_path = "src/images/output.png";
+    }
+    else{
+        output_path = argv[1];
+    }
+    std::clog << "\rDone raytracing, writing to file.                 \n";
+    if (!stbi_write_png(output_path, image_width, image_height, /* RGB */ 3, pixels.data(), image_width * 3)) {
+        throw_line("failed to write PNG file");
+    }
+    std::clog<<"Success! Result image located at "<<output_path<<"\n";
+
+    
+
 }

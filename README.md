@@ -9,3 +9,5 @@ IDEAS:
 - containerize project with Docker
 
 The goal of this project is to become a backend of a web application that uses a web-gl framework to let users design a scene, then call the raytracer, hosted on a custom web server
+
+Note: .vscode directory must be at root of project when in vs code (embedded run/debug tools don't work otherwise)
