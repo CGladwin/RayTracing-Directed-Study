@@ -1,22 +1,32 @@
 # Makefile
 
 SRC_DIR = src
-CPP_FILE = $(SRC_DIR)/first_image.cpp
-EXECUTABLE = $(SRC_DIR)/first_image
-PYTHON_SCRIPT = $(SRC_DIR)/PPM_image_output.py
+CPP_FILE = $(SRC_DIR)/main.cpp
+EXECUTABLE = $(SRC_DIR)/main.out
+OUTPUT = $(SRC_DIR)/images/output.png
 
-all: compile_cpp run_cpp run_python clean
+# default target
+all: compile_cpp run_cpp
 
+# Compile the program with optimizations
 compile_cpp:
-    @g++ $(CPP_FILE) -o $(EXECUTABLE)
+	@g++ $(CPP_FILE) -o $(EXECUTABLE)
 
+# run compiled code
 run_cpp: compile_cpp
-    @./$(EXECUTABLE)
+	@./$(EXECUTABLE) $(OUTPUT)
 
-run_python: run_cpp
-    @python $(PYTHON_SCRIPT)
+# Compile the program with debugging symbols and no optimizations
+debug:
+	@g++ -g -O0 $(CPP_FILE) -o $(EXECUTABLE)
 
+# remove executable
 clean:
-    @find $(SRC_DIR) -type f -perm -u=x -exec rm -f {} +
+	@rm -f $(EXECUTABLE) 
 
-.PHONY: all compile_cpp run_cpp run_python clean
+# remove png
+png_clean:
+	@rm -f $(OUTPUT) 
+
+# Tells Make that these are not files
+.PHONY: all compile_cpp run_cpp clean png_clean

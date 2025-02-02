@@ -54,8 +54,7 @@ color ray_color(const ray& r, const hittable& world) {
     return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
 }
 
-int main() {
-    
+int main(int argc, char* argv[]) {
     // Image
     auto aspect_ratio = 16.0 / 9.0;
     int image_width = 400;
@@ -105,10 +104,19 @@ int main() {
         }
     }
 
-    if (!stbi_write_png("images/output.png", image_width, image_height, /* RGB */ 3, pixels.data(), image_width * 3)) {
+    const char* output_path;
+    if (argc < 2) {
+        output_path = "src/images/output.png";
+    }
+    else{
+        output_path = argv[1];
+    }
+    std::clog << "\rDone raytracing, writing to file.                 \n";
+    if (!stbi_write_png(output_path, image_width, image_height, /* RGB */ 3, pixels.data(), image_width * 3)) {
         throw_line("failed to write PNG file");
     }
+    std::clog<<"Success! Result image located at "<<output_path<<"\n";
 
-    std::clog << "\rDone.                 \n";
+    
 
 }
