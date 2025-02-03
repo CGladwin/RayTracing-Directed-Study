@@ -1,5 +1,4 @@
-#ifndef MY_EXCEPTION_HPP
-#define MY_EXCEPTION_HPP
+#pragma once
 
 #include <iostream>
 #include <sstream>
@@ -21,5 +20,3 @@ public:
     }
 };
 #define throw_line(arg) throw my_exception(arg, __FILE__, __LINE__);
-
-#endif // MY_EXCEPTION_HPP

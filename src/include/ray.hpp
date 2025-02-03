@@ -1,5 +1,4 @@
-#ifndef RAY_HPP
-#define RAY_HPP
+#pragma once
 
 #include "vec3.hpp"
 
@@ -20,5 +19,3 @@ class ray {
     point3 orig;
     vec3 dir;
 };
-
-#endif

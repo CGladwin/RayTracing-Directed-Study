@@ -3,7 +3,7 @@
 SRC_DIR = src
 CPP_FILE = $(SRC_DIR)/main.cpp
 EXECUTABLE = $(SRC_DIR)/main.out
-OUTPUT = $(SRC_DIR)/images/output.png
+OUTPUT = $(SRC_DIR)/images/poop.png
 
 # default target
 all: compile_cpp run_cpp

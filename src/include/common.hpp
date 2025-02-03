@@ -1,13 +1,19 @@
-#ifndef COMMON_HPP
-#define COMMON_HPP
+#pragma once
 
-#include <iostream>
+#include <iosfwd>
 #include <fstream>
 #include <string>
 #include <stdexcept>
 #include <variant>
 #include <cmath>
 #include <memory>
+
+// Common Headers
+
+#include "color.hpp"
+#include "interval.hpp"
+#include "ray.hpp"
+#include "vec3.hpp"
 
 // C++ Std Usings
 
@@ -18,8 +24,12 @@ using std::string;
 
 // Constants
 
-const double infinity = std::numeric_limits<double>::infinity();
-const double pi = 3.1415926535897932385;
+
+
+// defined in "interval.hpp"
+// #include <limits>
+// const double infinity = std::numeric_limits<double>::infinity();
+constexpr double pi = 3.1415926535897932385;
 
 // Utility Functions
 
@@ -37,5 +47,3 @@ auto match(Val val, Ts... ts) {
     // https://en.cppreference.com/w/cpp/utility/variant/visit
     return std::visit(overloaded{ts...}, val);  
 }
-
-#endif

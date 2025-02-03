@@ -1,5 +1,5 @@
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#pragma once
+
 #include <cmath>
 #include <vector>
 #include <cassert>
@@ -83,4 +83,4 @@ template <size_t DIM, typename T> std::ostream& operator<<(std::ostream& out, co
     }
     return out ;
 }
-#endif
+

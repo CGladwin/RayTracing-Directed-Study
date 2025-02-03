@@ -1,5 +1,4 @@
-#ifndef COLOR_HPP
-#define COLOR_HPP
+#pragma once
 
 #include "vec3.hpp"
 #include <vector>
@@ -26,5 +25,3 @@ void write_color(std::vector<u_int8_t>& pixels, const color& pixel_color) {
     pixels.push_back(bbyte);
 
 }
-
-#endif
