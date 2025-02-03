@@ -1,3 +1,6 @@
+#ifndef COMMON_HPP
+#define COMMON_HPP
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -34,3 +37,5 @@ auto match(Val val, Ts... ts) {
     // https://en.cppreference.com/w/cpp/utility/variant/visit
     return std::visit(overloaded{ts...}, val);  
 }
+
+#endif
