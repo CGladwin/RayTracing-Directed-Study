@@ -1,7 +1,6 @@
 #pragma once
-#include <limits>
 
-constexpr double infinity = std::numeric_limits<double>::infinity();
+#include "common.hpp"
 
 class interval {
   public:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iosfwd>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <stdexcept>
@@ -8,13 +8,7 @@
 #include <cmath>
 #include <memory>
 #include <random> 
-
-// Common Headers
-
-#include "color.hpp"
-#include "interval.hpp"
-#include "ray.hpp"
-#include "vec3.hpp"
+#include <limits>
 
 // C++ Std Usings
 
@@ -28,8 +22,7 @@ using std::string;
 
 
 // defined in "interval.hpp"
-// #include <limits>
-// const double infinity = std::numeric_limits<double>::infinity();
+constexpr double infinity = std::numeric_limits<double>::infinity();
 constexpr double pi = 3.1415926535897932385;
 constexpr double degrees_to_radians_factor = pi / 180.0; // Precompute for performance
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "common.hpp"
+#include "base_classes.hpp"
 #include "hittable.hpp"
 #include "my_stb_image.h"
 #include "my_exception.hpp"
@@ -52,11 +53,16 @@ private:
      * @param world 
      * @return color 
     */
-    color ray_color(const ray& r, const hittable& world) const {
+    color ray_color(const ray& r, int depth, const hittable& world) const {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (depth <= 0)
+            return color(0,0,0);
+        
         hit_record rec;
 
         if (world.hit(r, interval(0, infinity), rec)) {
-            return 0.5 * (rec.normal + color(1,1,1));
+            vec3 direction = random_on_hemisphere(rec.normal);
+            return 0.5 * ray_color(ray(rec.p, direction), depth-1, world);
         }
 
         vec3 unit_direction = unit_vector(r.direction());
@@ -85,9 +91,18 @@ private:
     }
 
 public:
-    double aspect_ratio      = 1.0;  // Ratio of image width over height
-    int    image_width       = 100;  // Rendered image width in pixel count
-    int    samples_per_pixel = 10;   // Count of random samples for each pixel
+    double aspect_ratio;  // Ratio of image width over height
+    int    image_width;  // Rendered image width in pixel count
+    int    samples_per_pixel;   // Count of random samples for each pixel
+    int    max_depth;   // Maximum number of ray bounces into scene
+
+    // Constructor
+    camera(double aspect_ratio = 1.0,int image_width = 100,int samples_per_pixel = 10, int max_depth = 10) 
+            : aspect_ratio(aspect_ratio), image_width(image_width), samples_per_pixel(samples_per_pixel), max_depth(max_depth)
+    {
+        initialize();
+        pixels.reserve(image_width * image_height * 3); // Reserve space for RGB pixels
+    }
 
     void generate_png(int argc, char* argv[]){
         const char* output_path;
@@ -105,16 +120,13 @@ public:
     }
 
     void render(const hittable& world,int argc, char* argv[]) {
-        initialize();
-        // vector for png output
-        // pixels.reserve(image_width * image_height * 3);
         for (int j = 0; j < image_height; j++) {
             std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; i++) {
                 color pixel_color(0,0,0);
                 for (int sample = 0; sample < samples_per_pixel; sample++) {
                     ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, world);
+                    pixel_color += ray_color(r, max_depth, world);
                 }
                 write_color(pixels, pixel_samples_scale * pixel_color);
             }
