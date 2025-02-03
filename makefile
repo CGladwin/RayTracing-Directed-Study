@@ -8,8 +8,6 @@ OUTPUT = $(SRC_DIR)/images/output.png
 # default target
 all: compile_cpp run_cpp
 
-total: compile_cpp run_cpp clean doxy
-
 # Compile the program with optimizations
 compile_cpp:
 	@g++ $(CPP_FILE) -o $(EXECUTABLE)
@@ -21,7 +19,6 @@ run_cpp: compile_cpp
 # Compile the program with debugging symbols and no optimizations
 debug:
 	@g++ -g -O0 $(CPP_FILE) -o $(EXECUTABLE)
-	@echo "Debug build complete. Use a debugger (e.g., gdb) to run the program."
 
 # remove executable
 clean:
@@ -30,10 +27,6 @@ clean:
 # remove png
 png_clean:
 	@rm -f $(OUTPUT) 
-
-# recompile doxygen
-doxy:
-	@doxygen $(SRC_DIR)/doxyfile
 
 # Tells Make that these are not files
 .PHONY: all compile_cpp run_cpp clean png_clean
