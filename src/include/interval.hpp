@@ -25,6 +25,12 @@ class interval {
     constexpr bool surrounds(double x) const noexcept {
         return min < x && x < max;
     }
+    
+    constexpr double clamp(double x) const noexcept {
+        if (x < min) return min;
+        if (x > max) return max;
+        return x;
+    }
 
     static const interval empty, universe;
 };

@@ -3,10 +3,10 @@
 SRC_DIR = src
 CPP_FILE = $(SRC_DIR)/main.cpp
 EXECUTABLE = $(SRC_DIR)/main.out
-OUTPUT = $(SRC_DIR)/images/poop.png
+OUTPUT = $(SRC_DIR)/images/output.png
 
 # default target
-all: compile_cpp run_cpp
+all: compile_cpp run_cpp clean
 
 total: compile_cpp run_cpp clean doxy
 
