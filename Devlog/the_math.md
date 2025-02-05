@@ -1,12 +1,92 @@
 ### Math Pre-Requisite Knowledge
+- The quadratic formula to solve `ax^2 +bx + c = 0` for x is:
+   -  `-b +/= sqrt(b^2 - 4ac)) / 2a`
+-  The descrimintant `b^2 - 4ac` tells us how many solutions for x there are
+   -  if it's positive, there are 2 solutions
+   -  if it's negative, there are no solutions
+   -  if it's 0, there's 1 solution
+   -  with Pseudocode: `BOOLEAN(b^2 - 4ac > 0) + BOOLEAN(b^2 - 4ac < 0)`
 - vectors
-  - think of a vector like an arrow in space. 
+  - think of a vector like a bullet travelling in space. 
   - It has magnitude (length)
   - It has direction
+  - It took me a while to realize *vectors dont actually have a start and an end point*. you can use a start and end point to describe a vector's length and direction simulaneously, but any vector travelling in that direction, with that length, is treated as identical.
+  - Given Points A and B, a vector travelling from points A to B is defined as `B-A`
+    - this vector's coordinates are`B.x - A.x, B.y - A.y, B.z - A.z`
 - scalars
   - a scalar is a value whose only attribute is its magnitude
   - notably, a scalar can only be 1 number
-- 
-- a ray here is a function P(t)=A+tb
-  - the Position "P" for a given time "t" is equal to the ray origin "A" plus the t mult'd by its direction "b"
-### Goal: Understand the Math
+- norm (euclidean vector norm)
+  - the norm of a vector (V) is its length
+  - it's calculated by the following pseudocode: `SQUARE ROOT(SUM(MAP(V -> V ^ 2)))`
+- normal vectors
+  - vectors that move perpendicular from an object at a given point. 
+- vector dot product
+  - takes two vectors (A, B), and produces a scalar based on their length and internal angle
+  - with pseudocode, it's `SUM(MAP(A,B -> A*B))`
+  - NOTE: `DOT(A,A) = A^2`
+  - NOTE: for scalars k,l, `DOT(k,l) = k*l`
+- vector cross product
+  - takes two vectors (A,B) and produces another vector that's perpendicular to them
+  - `CROSS(A,B).x = A.y*B.z - A.z*B.y `
+  - `CROSS(A,B).y = A.z*B.x - A.x*B.z `
+  - `CROSS(A,B).z = A.x*B.y - A.y*B.x `
+- Vector Algebra
+  - For any vectors u,v,w, and scalars k,l, we have:
+    - Commutative Law: 
+      - v+w=w+v
+      - "order doesn't matter when adding vectors"
+    - Associative Law: 
+      - u+(v+w)=(u+v)+w
+      - "arbitrary grouping works when adding vectors"
+    - Additive Identity:
+      - v+0=v=0+v
+      - "there exists a zero vector that leaves other vectors unchanged when added to them"
+    - Additive Inverse:
+      - v+(−v)=0
+      - "a vector minus itself cancels out and takes us back to the origin"
+    - Associative Law:
+      - k(lv)=(kl)v
+      - "order doesn't matter when multiplying scalars to vectors, so you can group scalar multiplicands"
+    - Distributive Law 1
+      - k(v+w)=kv+kw
+      - "scalars multiplied to a group of vectors getting summed are multiplied to each addend"
+    - Distributive Law 2
+      - (k+l)v=kv+lv
+      - "vectors multiplied to a group of scalars getting summed are multiplied to each addend"
+
+#### Ray Sphere Intersection
+- a ray here is a function `P(t)=A+tb`
+  - the Position "P" when given a scalar constant "t" is equal to the ray origin "A" plus the t mult'd by its direction vector "b" (I meant to type "d" for "direction" but I typed "b" and did the entirety of this section like that LOL)
+  
+- a sphere can be defined in physical space based on its origin C, which contains Cx, Cy, Cz; and radius (r). Given these values, every an arbitrary point P on the sphere (x,y,z) can be calculated. This can be derived because the radius is equal to the length of a straight line drawn from any point on the surface to its center. This line is defined as `C-P`.
+  - in math words: `NORM(C-P) = r`  
+  - Also intuitively, `NORM(C-P) < r` when P is inside the sphere, and `NORM(C-P) > r` when P is outside.
+  - recalling the vector algebra rules mentioned above, we can transform this:
+    -  `dot((C - P),(C - P)) = NORM(C-P) ^ 2 = r ^ 2`
+  - subbing our ray formula in for P, and applying Associative Law:
+    - `dot(((-tb + (C - A))),(-tb + (C - A))) = r^2`
+  - applying distributive law (same as polynomial distribution)
+    - `dot(-tb,-tb) + dot(-tb,(C-A)) + dot((C-A),-tb) + dot((C-A),(C-A) = r^2`
+  - pulling out the scalars:
+    -  `-t * -t * dot(b,b) + -t * dot(b,(C-A)) + -t * dot((C-A),b)  + dot((C-A),(C-A)) = r^2`
+ -  bringing over r:
+    -  `t^2 * dot(b,b) + -2t * dot(b,(C-A)) + (dot((C-A),(C-A)) - r^2) = 0`
+ -  the dot product calculations and r are all scalar and known, so the unknown we're solving for is t. Given this, the equation is a quadratic equation. 
+       -  here:
+          -  `a = dot(b,b)`
+          -  `b = -2 * dot(b,(C-A))`
+          -  `c = dot((C-A),(C-A)) - r^2`
+    -  For now, the number of collisions is the important part, and this can be solved with the discriminant. Lets imagine we're checking for when there's no solutions (since we start with that in the code, explained in Optics):
+       -  `0 < (-2 * dot(b,(C-A)))^2 - 4 * dot(b,b) * (dot((C-A),(C-A)) - r^2)`
+       - is equivalent to:
+         - ` 0 < 4 * (dot(b,(C-A)))^2 - 4 * b^2 * ((C-A)^2 - r^2)`
+       - dividing both sides by 4:
+         - ` 0 < (dot(b,(C-A)))^2 - b^2 * ((C-A)^2 - r^2)`
+
+#### unit normal vectors 
+- they have a magnitude of 1. So for a vector V, `NORM(V) = 1`
+- for a sphere:
+  - recall `NORM(C-P) = r`
+  - the normal vector from any point P would pass through C, therefore we can use `C-P` as our normal vector. It can be converted to unit length easily, since we already know its length is the radius
+    - diving the vector by the Norm will mean its length has to be 1, so we're done
