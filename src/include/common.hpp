@@ -59,7 +59,7 @@ inline double random_double(double min, double max) noexcept {
 }
 
 /**
- * @brief A helper struct for overloading function objects (e.g., for std::visit).
+ * @brief A helper struct for overloading arbitrary function objects Ts (e.g., for std::visit).
  */
 template<class... Ts>
 struct overloaded : Ts... { using Ts::operator()...; };

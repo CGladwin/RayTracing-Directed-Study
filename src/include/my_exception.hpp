@@ -19,4 +19,5 @@ public:
         return msg.c_str();
     }
 };
+
 #define throw_line(arg) throw my_exception(arg, __FILE__, __LINE__);

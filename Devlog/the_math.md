@@ -1,7 +1,7 @@
 ### Math Pre-Requisite Knowledge
 - The quadratic formula to solve `ax^2 +bx + c = 0` for x is:
    -  `-b +/= sqrt(b^2 - 4ac)) / 2a`
--  The descrimintant `b^2 - 4ac` tells us how many solutions for x there are
+-  The descrimintant `b^2 - 4ac` tells us how many solutions for x there are in the above formula:
    -  if it's positive, there are 2 solutions
    -  if it's negative, there are no solutions
    -  if it's 0, there's 1 solution

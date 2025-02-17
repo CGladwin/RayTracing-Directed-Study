@@ -1,3 +1,5 @@
+
+*"shapes and colors are all I see"* - Deftones (from the song "Entombed")
 Going through Ray-tracing in one weekend, and making tweaks here and there. Then, building a web app to let users create scenes for raytracing.
 
 ## GOALS
@@ -14,7 +16,7 @@ IDEAS:
 - add bound volume heirarchy
 - add Doxygen-style comments/documentation
 - containerize project with Docker
-- Build frontend that sends json (and linked obj files) to backend to render image
+- Build frontend that sends json (and linked obj files) to backend to render image (design frontend as single page application)
 
 The goal of this project is to become a backend of a web application that uses a web-gl framework to let users design a scene, then call the raytracer, hosted on a custom web server
 

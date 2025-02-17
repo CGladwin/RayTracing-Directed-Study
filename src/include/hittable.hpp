@@ -18,9 +18,13 @@ class hit_record {
     }
 };
 
+/**
+ * @brief abstract base class for hittable objects in 3d space
+ */
 class hittable {
   public:
     virtual ~hittable() = default;
 
+    // pure virtual function; must be overridden in derived classes
     virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
 };
