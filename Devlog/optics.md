@@ -77,3 +77,9 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
 "almost all computer programs assume that an image is “gamma corrected” before being written into an image file. This means that the 0 to 1 values have some transform applied before being stored as a byte"
 - the image viewer used expected an image in *gamma space*, with a transform applied to the bytes, but we gave it one in *linear space*
 - to transform it to gamma space, we have to raise our rgb values to the exponent 1/gamma. We use gamma = 2, which means we have to take the square root of our color values
+
+#### Modeling Light Scatter and Reflectance
+- **Albedo**: literally "whiteness", indicates reflectance (ranging from 0 to 1). Shirley et al use albedo for their diffuse material such that the lambertian material always scatters and attenuates (shortens) incoming ray. Other methods:
+  -  rays are sometimes scattered based on a probability of 1-R (less reflective materials are more likely to absorb incoming rays)
+
+#### Mirrored Light Reflection

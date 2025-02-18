@@ -4,6 +4,7 @@
 #include "hittable.hpp"
 #include "my_stb_image.h"
 #include "my_exception.hpp"
+#include "material.hpp"
 
 class camera {
 private:
@@ -61,9 +62,11 @@ private:
         hit_record rec;
 
         if (world.hit(r, interval(0.001, infinity), rec)) {
-            // generates lambertian material
-            vec3 direction = rec.normal + random_unit_vector();
-            return 0.5 * ray_color(ray(rec.p, direction), depth-1, world);
+            ray scattered;
+            color attenuation;
+            if (rec.mat->scatter(r, rec, attenuation, scattered))
+                return attenuation * ray_color(scattered, depth-1, world);
+            return color(0,0,0);
         }
         /**
          * lerp used to create background gradient

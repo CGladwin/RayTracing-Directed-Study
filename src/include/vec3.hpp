@@ -110,6 +110,17 @@ class vec3 {
     }
 
     /**
+     * @brief Return true if the vector is close to zero in all dimensions.
+     * 
+     * @return true 
+     * @return false 
+     */
+    constexpr bool near_zero() const noexcept {
+        auto s = 1e-8;
+        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+    }
+
+    /**
      * @brief Generates a random vector with components in [0, 1).
      * @return A random vector.
      */
@@ -244,4 +255,8 @@ inline vec3 random_on_hemisphere(const vec3& normal) noexcept {
         return on_unit_sphere;
     else
         return -on_unit_sphere;
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) noexcept {
+    return v - 2*dot(v,n)*n;
 }
