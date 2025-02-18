@@ -47,7 +47,7 @@ private:
      * 
      * if sphere is not hit, color is based on a a predefined gradient
      * 
-     * if sphere is hit, color is based on surface normals (not a real texture)
+     * if sphere is hit, color is based on lambertian material
      * 
      * @param r 
      * @param world 
@@ -61,13 +61,24 @@ private:
         hit_record rec;
 
         if (world.hit(r, interval(0.001, infinity), rec)) {
+            // generates lambertian material
             vec3 direction = rec.normal + random_unit_vector();
             return 0.5 * ray_color(ray(rec.p, direction), depth-1, world);
         }
+        /**
+         * lerp used to create background gradient
+         * blendedValue=(1−a)⋅startValue+a⋅endValue
+         * here, startValue = white, endValue = blue
+         * 
+         * if something was hit, it will affect r.direction vec3, which will tint the color
+         * (since the loss of energy on hits will result in smaller vectors)
+         * 
+         */
 
         vec3 unit_direction = unit_vector(r.direction());
-        auto a = 0.5*(unit_direction.y() + 1.0);
-        return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+        auto background_gradient = 0.5*(unit_direction.y() + 1.0);
+        // 
+        return (1.0-background_gradient)*color(1.0, 1.0, 1.0) + background_gradient*color(0.5, 0.7, 1.0);
     }
 
     ray get_ray(int i, int j) const {

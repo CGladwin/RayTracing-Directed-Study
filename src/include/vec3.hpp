@@ -7,7 +7,7 @@
  */
 class vec3 {
   public:
-    double e[3]; ///< The components of the vector.
+    double e[3]; /// The components of the vector.
 
     /**
      * @brief Default constructor. Initializes all components to 0.
@@ -220,13 +220,14 @@ inline vec3 unit_vector(const vec3& v) noexcept {
 }
 
 /**
- * @brief 
+ * @brief uses rejection method; indefinitely loops until it 
+ * generates a vec3 that falls within sphere, then normalizes it
  * @return A random unit vector.
  */
 inline vec3 random_unit_vector() noexcept {
     while (true) {
         auto p = vec3::random(-1, 1);
-        auto lensq = p.length_squared();
+        auto lensq = p.length_squared(); // doesn't use length at this point to avoid sqrt early
         if (1e-160 < lensq && lensq <= 1)
             return p / std::sqrt(lensq);
     }

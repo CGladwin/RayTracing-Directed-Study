@@ -69,4 +69,11 @@ In the branch "diffuse_material" I've implemented the simple diffuse material me
 
 #### Lambertian Material
 Lambertian Material, visually, looks like a matte surface. This is done by making sure a reflected ray is most likely to scatter towards the surface normal.
+The book passage explaining the metaphor of how this is achieved is kind of confusing, but this is how I understand it: imagine a unit sphere U tangent to the ray's point of contact p on the surface of a sphere. There are fewer possible points within U that are away from the normal than towards it. This can be seen by looking at possible chords (lines drawn from points on U). The shortest chords point away from the normal (indicating they're less likely to be sampled), and the longest chord possible is the same direction as the normal vector (indicating it's more likely to be sampled)
 
+#### Gamma Correction
+The book mentions "The (current) picture is very dark, but our spheres only absorb half the energy of each bounce, so they are 50% reflectors". explainer: "If a ray bounces off of a material and keeps 100% of its color, then we say that the material is white. If a ray bounces off of a material and keeps 0% of its color, then we say that the material is black."
+
+"almost all computer programs assume that an image is “gamma corrected” before being written into an image file. This means that the 0 to 1 values have some transform applied before being stored as a byte"
+- the image viewer used expected an image in *gamma space*, with a transform applied to the bytes, but we gave it one in *linear space*
+- to transform it to gamma space, we have to raise our rgb values to the exponent 1/gamma. We use gamma = 2, which means we have to take the square root of our color values
