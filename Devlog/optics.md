@@ -83,3 +83,11 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
   -  rays are sometimes scattered based on a probability of 1-R (less reflective materials are more likely to absorb incoming rays)
 
 #### Mirrored Light Reflection
+- polished materials scatter light more deterministically via reflection
+    1. when reflection happens to an incoming ray v, we decompose it to 2 parts, one parallel (tangent) to the surface, and one normal to the surface (here called b)
+    2. this parallel component doesn't transform, since the ray continues in that direction relative to the surface
+    3. b does transform in the outgoing vector o, however, into -b (since the vector is flipped)
+    4. therefore the change (delta) from v.b to o.b is `new - old` = `-b -(b)`
+        - this makes logical sense. If the change were -b, then the vector would become [0,0,0]
+-  This transformation of the incoming vector v here is v - 2(v.PROJ(n)), where n is the surface norm
+  - consider that `(NORM(n)^2)` here is `1^2` since n is normalized already

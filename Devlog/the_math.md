@@ -17,7 +17,7 @@
   - a scalar is a value whose only attribute is its magnitude
   - notably, a scalar can only be 1 number
 - norm (euclidean vector norm)
-  - the norm of a vector (V) is its length
+  - the norm of a vector (V) is its length/magnitude
   - it's calculated by the following pseudocode: `SQUARE ROOT(SUM(MAP(V -> V ^ 2)))`
 - normal vectors
   - vectors that move perpendicular from an object at a given point. 
@@ -90,3 +90,8 @@
   - recall `NORM(C-P) = r`
   - the normal vector from any point P would pass through C, therefore we can use `C-P` as our normal vector. It can be converted to unit length easily, since we already know its length is the radius
     - diving the vector by the Norm will mean its length has to be 1, so we're done
+
+#### vector projection
+when you project a vector A onto another vector B, you find its component that's parallel to B.
+the formula for this is:
+- `U.PROJ(V) = (DOT(U,V)/(NORM(V)^2))*V`
