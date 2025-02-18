@@ -109,7 +109,7 @@ the formula for this is:
         - the vectors here, this can be simplified to `n⋅R=cosθ` since n is normalized, and R has been normalized (when we implemented fuzziness)
       - `sin(θ) = SQRT(1-cos(θ)^2)` 
       - `cos(θ) = SQRT(1-sin(θ)^2)` 
-    2. first of all,we're splitting a vector into components that sum up to it, one of which is parallel to the parameter vector its taking (the projection).  The other is perpendicular/orthogonal (the rejection). We'll calculate the rejection first.
+    2. first of all, we're splitting a vector into components that sum up to it, one of which is parallel to the parameter vector its taking (the projection).  The other is perpendicular/orthogonal (the rejection). We'll calculate the rejection first.
       - given by: `U.REJ(V) = U - U.PROJ(V) `
       - `Rprime.REJ(n) = R.REJ(n) * scaling factor` where the scaling factor is given by `sin(θ₂)/sin(θ₁)`
         - this makes logical sense: the ray's perpendicular direction is modified from the incident ray by refraction

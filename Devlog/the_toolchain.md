@@ -8,3 +8,6 @@ I learned about:
 - Doxygen for documentation
 - Initially using python
 - Setting up .vscode for debugging c++
+- profiling code:
+  - valgrind
+  - flamegraph

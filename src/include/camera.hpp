@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono> 
 #include "common.hpp"
 #include "base_classes.hpp"
 #include "hittable.hpp"
@@ -129,11 +130,12 @@ public:
         if (!stbi_write_png(output_path, image_width, image_height, /* RGB */ 3, pixels.data(), image_width * 3)) {
             throw_line("failed to write PNG file");
         }
-        std::clog<<"Success! Result image located at "<<output_path<<"\n";
+        cout<<"Success! Result image located at "<<output_path<<"\n";
 
     }
 
     void render(const hittable& world,int argc, char* argv[]) {
+        auto start_time = std::chrono::high_resolution_clock::now(); 
         for (int j = 0; j < image_height; j++) {
             std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; i++) {
@@ -146,8 +148,9 @@ public:
             }
         }
 
-
-        std::clog << "\rDone raytracing, writing to file.                 \n";
+        auto end_time = std::chrono::high_resolution_clock::now(); 
+        std::chrono::duration<double> duration = end_time - start_time; 
+        std::clog << "\rDone raytracing! Program completed in "<<duration.count()<< " seconds. \nWriting to file...\n";
         generate_png(argc,argv);
     }
 

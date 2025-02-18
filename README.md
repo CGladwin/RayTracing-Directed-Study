@@ -1,5 +1,6 @@
 
 *"shapes and colors are all I see"* - Deftones (from the song "Entombed")
+
 Going through Ray-tracing in one weekend, and making tweaks here and there. Then, building a web app to let users create scenes for raytracing.
 
 ## GOALS
