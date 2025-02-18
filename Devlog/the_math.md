@@ -95,3 +95,34 @@
 when you project a vector A onto another vector B, you find its component that's parallel to B.
 the formula for this is:
 - `U.PROJ(V) = (DOT(U,V)/(NORM(V)^2))*V`
+
+#### Snell's law
+- Snell's law is how we determine the refraction of our dielectrics
+  - `n₁ * sin(θ₁) = n₂ * sin(θ₂)`
+  - Here, n₁ and n₂ are the refractive indices of the first and second media, respectively. θ₁ is the angle at which the light ray hits the boundary relative to the normal (the angle of incidence), and θ₂ is the angle at which it travels in the new medium relative to the normal (the angle of refraction).
+    - n1, n2, and theta1 are all known at the point where the ray hits the surface, so we need to solve for theta2 (the refraction angle)
+  - Shirley et al. use a proof for solving the refracted ray and say "You can go ahead and prove this for yourself if you want". Lets do that!
+    1. this proof leverages the following:
+      - `sin(θ₂) = (n₁ / n₂) * sin(θ₁)  `
+      - `U.PROJ(V) = (DOT(U,V)/(NORM(V)^2))*V`
+      - another definition of the dot product: `v⋅w=∥v∥∥w∥cosθ`
+        - the vectors here, this can be simplified to `n⋅R=cosθ` since n is normalized, and R has been normalized (when we implemented fuzziness)
+      - `sin(θ) = SQRT(1-cos(θ)^2)` 
+      - `cos(θ) = SQRT(1-sin(θ)^2)` 
+    2. first of all,we're splitting a vector into components that sum up to it, one of which is parallel to the parameter vector its taking (the projection).  The other is perpendicular/orthogonal (the rejection). We'll calculate the rejection first.
+      - given by: `U.REJ(V) = U - U.PROJ(V) `
+      - `Rprime.REJ(n) = R.REJ(n) * scaling factor` where the scaling factor is given by `sin(θ₂)/sin(θ₁)`
+        - this makes logical sense: the ray's perpendicular direction is modified from the incident ray by refraction
+      - since `sin(θ₂)/sin(θ₁) = (n₁ / n₂) ` : 
+        - `Rprime.REJ(n) = (n₁ / n₂) * R.REJ(n)`
+        - `= (n₁ / n₂) * (R - (-R.PROJ(n)))` multiplying R.PROJ(n) by -1 to ensure it's in the correct direction, since n points outward but refraction will point inward
+        - `= (n₁ / n₂) * (R + (DOT(R,n)/(NORM(n)^2))*n) ` again, norm(n) is 1
+        - `= (n₁ / n₂) * (R + DOT(R,n)*n) `
+    3. Now that Rprime.REJ(n) is exclusively written in terms of things we know prior to refraction, we can shamelessly use Rprime.REJ(n) to calculate Rprime.PROJ(n)
+       - `Rprime.PROJ(n) = Rprime - Rprime.REJ(n)` 
+       - ` NORM(Rprime.PROJ(n)) + NORM(Rprime.REJ(n)) = NORM(Rprime) = 1` since everything is unit length 
+       - `SQRT(Rprime.PROJ(n)^2 : scalar) + SQRT(Rprime.REJ(n)^2 : scalar) = 1` and squaring everything gets:
+       - `Rprime.PROJ(n)^2 + Rprime.REJ(n)^2 = 1` rearranging, and squaring again:
+       - `NORM(Rprime.PROJ(n)) = SQRT(1-Rprime.REJ(n)^2)`
+       - `Rprime.PROJ(n) = NORM(Rprime.PROJ(n)) * n` since the projection of Rprime onto n will just be a modification of n by the magnitude of Rprime
+       - `Rprime.PROJ(n) = SQRT(1-Rprime.REJ(n)^2) * n`
