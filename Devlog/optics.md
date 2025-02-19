@@ -136,4 +136,19 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
     - when this is applied, you can see that there is a slight reflection of other spheres in the environment within a glass sphere
 
 #### Camera Adjustments
--**FOV**
+- **FOV**
+  - in our case, we're allowing the user to adjust the vertical FOV (the height of the viewport in y space)
+    - Shirley et al. "usually specify it in degrees and change to radians inside a constructor"
+  - the area enclosed from the ray origin [0,0,0] to the vertical ends of the viewport, when looked at the side, can be visualized as 2 right angled triangles. This means, if the angle from the top to the bottom vertically is θ, then we can use `tan(θ/2) = opposite/adjacent` to determine the viewport height of one triangle
+    - adjacent is the focal length (distance from ray origin to camera), so `tan(θ/2) * focal_length = viewport_height/2` 
+    - therefore  `tan(θ/2) * focal_length * 2 = viewport_height`
+- Adjustable camera position
+  - we can allow the camera to freely move in the scene, if a few things are specified:
+    1.  the camera center, now called "lookfrom"
+    2.  the viewport center, now called "lookat" (remember, the ray cast from lookfrom to this point will be perpendicular to the viewport)
+    3.  the orientation of the viewport (which way is "up" in space)
+        - for this, we can treat "up" as the same as everything else
+        ```js
+          vec3   vup      = vec3(0,1,0);     // Camera-relative "up" direction
+        ``` 
+        - this results in an image that's horizontally level (our viewport pixel rows are parallel to the world's x-axis )

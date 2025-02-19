@@ -126,3 +126,8 @@ the formula for this is:
        - `NORM(Rprime.PROJ(n)) = SQRT(1-Rprime.REJ(n)^2)`
        - `Rprime.PROJ(n) = NORM(Rprime.PROJ(n)) * n` since the projection of Rprime onto n will just be a modification of n by the magnitude of Rprime
        - `Rprime.PROJ(n) = SQRT(1-Rprime.REJ(n)^2) * n`
+
+#### Orthonormal Basis
+- "After a few cross products and vector normalizations, we now have a complete orthonormal basis (u,v,w) to describe our camera’s orientation"???
+  - an orthonormal basis is a set of vectors that are normalized (have a length of 1) and perpendicular to all other vectors in the set (i.e. the dot product of any 2 distinct vectors in the set will be 0)
+  - In 3d space, this set can have up to 3 vectors
