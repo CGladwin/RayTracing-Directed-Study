@@ -113,14 +113,27 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
     - given `sin(θ₂) <= 1` (can be demonstrated by looking at a sine wave)
     - therefore  `n₁ / n₂ * sin(θ₁) <= 1`
       - this theoretically does not always hold true, and when that happens we have to reflect the ray
-      - initially, we were always refracting the ray, but we have to sometimes reflect the ray based on whether the above equation holds true or not. If 'ts not held true, we reflect (see below)
+    - initially, we were always refracting the ray, but we have to sometimes reflect the ray based on whether the above equation holds true or not. If i'ts not held true, we reflect
       - Choosing to reflect the ray  internally instead of allowing it to refract replicates the phenomenon of  **"Total internal reflection"**, which is when light reflects back through a material before exiting it due to it's angle of approach and the material having a higher refractive index than what exists outside
-        - (e.g. the surface of water can become an inverted mirror when looked at the correct angle beneath it)
-        - however, a glass sphere in air will never produce total internal reflection
-      - instead, to demonstrate a similar effect, we do total external reflection
-        - we can imagine the dielectric material has lower RI than its surroundings (like an air bubble in water), and observe that most rays refract, while some incident rays on the edges reflect
-        ```cpp
-          //this represents a material with a lower RI than its surroundings
-          auto material_left   = make_shared<dielectric>(1.00 / 1.33);
-        ``` 
+      - (e.g. the surface of water can become an inverted mirror when looked at the correct angle beneath it)
+      - however, a glass sphere in air will never produce total internal reflection
+    - instead, to demonstrate a similar effect, we do total external reflection
+      - we can imagine the dielectric material has lower RI than its surroundings (like an air bubble in water), and observe that most rays refract, while some incident rays on the edges reflect
+      ```cpp
+        //this represents a material with a lower RI than its surroundings
+        auto material_left   = make_shared<dielectric>(1.00 / 1.33);
+      ``` 
+  - simulating a hollow glass sphere is #1 relatively easy from here and #2 allows us to treat the default RI as 1 (like air).
+    - generate a "glass" sphere (a sphere with our always-refracting dieletric material and an RI = 1.5)
+    - generate another sphere inside it (same center point, slightly smaller radius), and assume its internal RI is 1, and its outer RI is 1.5 (since it's encased in glass)
+      - therefore the RI ratio is 1/1.5
+  - real air to glass (or similar high RI) behaviour with realistic reflective properties can be simulated using **Schlick's approximation**:
+    - `R(θ)=R0​+(1−R0​)(1−cosθ)^5` Where:
+      - R(θ) is the reflectance (how much light is reflected) at an angle θ.
+      - R0 is the reflectance when an incoming ray is travelling parallel to the normal vector on the surface.
+        - derived by `((n1 - n2)/(n1 + n2))^2` where n1 is the outer material RI and n2 is the inner material RI
+      - θ is the angle between the view direction and the surface normal.
+    - when this is applied, you can see that there is a slight reflection of other spheres in the environment within a glass sphere
 
+#### Camera Adjustments
+-**FOV**
