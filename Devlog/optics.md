@@ -108,5 +108,19 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
 - "When a transparent material is embedded in a different transparent material, you can describe the refraction with a relative refraction index: the refractive index of the object's material divided by the refractive index of the surrounding material. For example, if you want to render a glass ball under water, then the glass ball would have an effective refractive index of 1.125. This is given by the refractive index of glass (1.5) divided by the refractive index of water (1.333). "
   - what is the refractive index of a hollow glass ball?
 - **Snell's law** is how we determine the refraction of our dielectrics (see: The Math.md)
-
+  - a side effect of Snell's law: "ray angles for which no solution is possible using Snell's law."
+    - given `n₁ * sin(θ₁) = n₂ * sin(θ₂)` 
+    - given `sin(θ₂) <= 1` (can be demonstrated by looking at a sine wave)
+    - therefore  `n₁ / n₂ * sin(θ₁) <= 1`
+      - this theoretically does not always hold true, and when that happens we have to reflect the ray
+      - initially, we were always refracting the ray, but we have to sometimes reflect the ray based on whether the above equation holds true or not. If 'ts not held true, we reflect (see below)
+      - Choosing to reflect the ray  internally instead of allowing it to refract replicates the phenomenon of  **"Total internal reflection"**, which is when light reflects back through a material before exiting it due to it's angle of approach and the material having a higher refractive index than what exists outside
+        - (e.g. the surface of water can become an inverted mirror when looked at the correct angle beneath it)
+        - however, a glass sphere in air will never produce total internal reflection
+      - instead, to demonstrate a similar effect, we do total external reflection
+        - we can imagine the dielectric material has lower RI than its surroundings (like an air bubble in water), and observe that most rays refract, while some incident rays on the edges reflect
+        ```cpp
+          //this represents a material with a lower RI than its surroundings
+          auto material_left   = make_shared<dielectric>(1.00 / 1.33);
+        ``` 
 
