@@ -230,6 +230,14 @@ inline vec3 unit_vector(const vec3& v) noexcept {
     return v / v.length();
 }
 
+inline vec3 random_in_unit_disk() noexcept {
+    while (true) {
+        auto p = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (p.length_squared() < 1)
+            return p;
+    }
+}
+
 /**
  * @brief uses rejection method; indefinitely loops until it 
  * generates a vec3 that falls within sphere, then normalizes it
