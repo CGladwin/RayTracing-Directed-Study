@@ -152,3 +152,33 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
           vec3   vup      = vec3(0,1,0);     // Camera-relative "up" direction
         ``` 
         - this results in an image that's horizontally level (our viewport pixel rows are parallel to the world's x-axis )
+
+#### Bound Volume Hierarchies
+- The core idea of Bound Volume Hierarchies appears to be similar to the binary search algorithm on a sorted array.
+  - Instead of searching the whole array linearly for the value you want, you subdivide the array, check if the value you want would fall within the elements bounding it, and if so, continue subdividing recursively.
+  ```py
+  if ray hits bounding object
+        return whether ray hits bounded objects
+    else
+        return false 
+  ```
+- this bounding object can probably be a primitive that's easy to calculate intersections on, like a sphere 
+- The rule is that the children of bound volumes must be totally enclosed, but sibling bound volumes may overlap, and sibling objects or volumes have no concept of order
+- the most optimized technique is for bounding objects to be nested inside parent bounding volumes. These parents totally enclose their children volumes
+- Axis-Aligned Bounding Boxes (dividing objects into boxes that are oriented parallel to the x,y, and z axis in space) works well
+  - these boxes can be treated as "slabs" only defined by intervals in space
+    - In 3D, a slab is the space between two parallel planes
+      - we only need 3 slabs to define an AABB 
+    - an interval is distinct from a vector, in that it has magnitude defined by 2 endpoints, but not direction
+- "if a ray intersects the box bounded by all pairs of planes, then all t-intervals will overlap"
+  - i.e. if a ray intersects a box, the equation `Ray_point(constant_t)=Origin_Point + constant_t * direction_Vec` will have some solution t, where Ray_point(t).x, Ray_point(t).y and  Ray_point(t).z is within its interval, 
+- The pseudocode of what we're trying to do (by breaking down a ray into its axial components and finding if they land within an interval):
+  ```CPP
+    interval_x ← compute_intersection_x (ray, x0, x1)
+    interval_y ← compute_intersection_y (ray, y0, y1)
+    interval_z ← compute_intersection_z (ray, z0, z1)
+    return overlaps(interval_x, interval_y, interval_z)
+  ```  
+- some caveats:
+  - we need to handle when a ray is travelling in a negative direction, and want to return the inverse of an interval we planned for (e.g, [7,3] instead of [3,7])
+  - because we're breaking down the ray formula into its components (e.g. `Ray_point(constant_t).x = Origin_Point.x + constant_t * direction_Vec.x`), its possible for a component to be 0 if the ray does not move in that axis (which results in dividing by 0 when isolating for t!). Its also possible for the ray origin to lie on a slab, if true along with the former, results in 0/0 = NaN!

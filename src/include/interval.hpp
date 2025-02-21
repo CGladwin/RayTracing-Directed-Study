@@ -59,6 +59,11 @@ class interval {
         return x;
     }
 
+    constexpr interval expand(double delta) const noexcept {
+        auto padding = delta/2;
+        return interval(min - padding, max + padding);
+    }
+
     /// Represents an empty interval.
     static const interval empty;
 
