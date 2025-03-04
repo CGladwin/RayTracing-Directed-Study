@@ -35,9 +35,6 @@
 *.out
 *.app
 
-# Callgrind object files
-*.out.*
-
 # image files
 *.ppm
 *.png
