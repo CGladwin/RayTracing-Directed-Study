@@ -14,6 +14,8 @@ class vec3 {
      */
     constexpr vec3() noexcept : e{0, 0, 0} {}
 
+    vec3(std::vector<float> v3) noexcept : e{v3[0],v3[1],v3[2]} {}
+
     /**
      * @brief Constructs a vector with the given components.
      * @param e0 The x-component.
