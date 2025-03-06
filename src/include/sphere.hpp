@@ -10,7 +10,7 @@
  * 
  */
 struct sphere : public hittable {
-  sphere() : center(), radius(), mat() {}
+  sphere() : center(point3()), radius(0.0), mat(nullptr) {}
 
   sphere(const point3& center, double radius, shared_ptr<material> mat)
     : center(std::move(center)), radius(std::move(std::fmax(0,radius))), mat(std::move(mat)) {}

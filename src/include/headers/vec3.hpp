@@ -25,7 +25,7 @@ struct vec3 {
     constexpr vec3(double e0, double e1, double e2) noexcept : e{e0, e1, e2} {}
 
     /// Constructs a vector from a std::vector<float>.
-    vec3(std::vector<float> v3) noexcept;
+    vec3(std::vector<float> v3) noexcept : e{v3[0],v3[1],v3[2]} {};
 
     /**
      * @brief Returns the x-component of the vector.
