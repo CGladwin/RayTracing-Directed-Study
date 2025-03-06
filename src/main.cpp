@@ -14,7 +14,6 @@ using std::vector;
 namespace nlohmann {
     template <>
     struct adl_serializer<sphere> {
-
         using material_func = std::function<shared_ptr<material>(const json&)>;
 
         // Function to get a reference to the static material map
@@ -37,16 +36,16 @@ namespace nlohmann {
             return material_map;
         }
 
-        static sphere from_json(const json& j, sphere& s) {
+        static sphere from_json(const json& j) {
             
             // Deserialize center
-            point3 center = point3(j["center"].get<vector<float>>());
+            point3 center = point3(j.at("center").get<vector<float>>());
 
             // Deserialize radius
-            double radius = j["radius"].get<double>();
+            double radius = j.at("radius");
 
             // Get material type and lookup in map
-            string mat_str = j["material"].get<string>();
+            string mat_str = j.at("material").get<string>();
             shared_ptr<material> mat;
             const auto& material_map = get_material_map();
             auto it = material_map.find(mat_str);
@@ -65,11 +64,11 @@ namespace nlohmann {
             json material_json;
             if (auto mat = std::dynamic_pointer_cast<lambertian>(s.mat)) {
                 material_json["material"] = "lambertian";
-                material_json["color_args"] = { mat->albedo.r(), mat->albedo.g(), mat->albedo.b() };
+                material_json["color_args"] = { mat->albedo.x(), mat->albedo.y(), mat->albedo.z() };
             } 
             else if (auto mat = std::dynamic_pointer_cast<metal>(s.mat)) {
                 material_json["material"] = "metal";
-                material_json["color_args"] = { mat->albedo.r(), mat->albedo.g(), mat->albedo.b() };
+                material_json["color_args"] = { mat->albedo.x(), mat->albedo.y(), mat->albedo.z() };
                 material_json["metal_fuzz"] = mat->fuzz;
             } 
             else if (auto mat = std::dynamic_pointer_cast<dielectric>(s.mat)) {

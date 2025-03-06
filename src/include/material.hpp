@@ -3,7 +3,7 @@
 #include "hittable.hpp"
 #include "color.hpp"
 
-class material {
+struct material {
   public:
     virtual ~material() = default;
 
@@ -14,7 +14,7 @@ class material {
     }
 };
 
-class lambertian : public material {
+struct lambertian : public material {
   public:
     lambertian(const color& albedo) : albedo(albedo) {}
 
@@ -32,11 +32,10 @@ class lambertian : public material {
         return true;
     }
 
-  private:
     color albedo;
 };
 
-class metal : public material {
+struct metal : public material {
   public:
     // fuzz can probably just be an unsigned int
     metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
@@ -50,12 +49,11 @@ class metal : public material {
         return (dot(scattered.direction(), rec.normal) > 0);
     }
 
-  private:
     color albedo;
     double fuzz;
 };
 
-class dielectric : public material {
+struct dielectric : public material {
   public:
     dielectric(double refraction_index) : refraction_index(refraction_index) {}
 
@@ -83,8 +81,6 @@ class dielectric : public material {
         scattered = ray(rec.p, direction);
         return true;
     }
-
-  private:
     // Refractive index in vacuum or air, or the ratio of the material's refractive index over
     // the refractive index of the enclosing media
     double refraction_index;
