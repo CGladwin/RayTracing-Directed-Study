@@ -188,3 +188,4 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
     - If both are -∞, the ray is outside the slab and moving toward it (but still parallel, so no intersection).
     - If one is +∞ and the other is -∞, the ray lies entirely within the slab.
   - For now, the book asks us to arbitrarily decide whether the rays whose origins are on a slab plane are hit or not
+- I've not yet tested the results empirically of the speedup between BVH and the more naive approach, but casual guesswork seems to show that, for 3 or fewer spheres, the naive approach is much faster, and for 4 spheres, they're about the same (with BVH having significantly less change in time-cost than naive)

@@ -48,7 +48,7 @@ class hittable_list : public hittable {
         return hit_anything;
     }
 
-    // aabb bounding_box() const override { return bbox; }
+    aabb bounding_box() const override { return bbox; }
 
     private:
         aabb bbox;

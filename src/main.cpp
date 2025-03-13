@@ -5,6 +5,7 @@
 #include "include/camera.hpp"
 #include "include/material.hpp"
 #include "include/external/json.hpp"
+#include "include/bvhn.hpp"
 #include <unordered_map>
 using json = nlohmann::json;
 using std::unordered_map;
@@ -72,26 +73,26 @@ int main(int argc, char* argv[]) {
 
 
     auto spherical = scene_json.template get<sphere>();
-    cout << "Sphere after deserialization:\n";
-    cout << "  Center: (" << spherical.center.x() << ", " 
-                         << spherical.center.y() << ", " 
-                         << spherical.center.z() << ")\n";
-    cout << "  Radius: " << spherical.radius << "\n";
-    cout << "  Material: ";
-    if (auto mat = std::dynamic_pointer_cast<lambertian>(spherical.mat)) {
-        cout << "Lambertian with albedo (" << mat->albedo.x() << ", " 
-                                          << mat->albedo.y() << ", " 
-                                          << mat->albedo.z() << ")\n";
-    } else if (auto mat = std::dynamic_pointer_cast<metal>(spherical.mat)) {
-        cout << "Metal with albedo (" << mat->albedo.x() << ", " 
-                                     << mat->albedo.y() << ", " 
-                                     << mat->albedo.z() << ") and fuzz " 
-                                     << mat->fuzz << "\n";
-    } else if (auto mat = std::dynamic_pointer_cast<dielectric>(spherical.mat)) {
-        cout << "Dielectric with refraction index " << mat->refraction_index << "\n";
-    } else {
-        cout << "Unknown material type\n";
-    }
+    // cout << "Sphere after deserialization:\n";
+    // cout << "  Center: (" << spherical.center.x() << ", " 
+    //                      << spherical.center.y() << ", " 
+    //                      << spherical.center.z() << ")\n";
+    // cout << "  Radius: " << spherical.radius << "\n";
+    // cout << "  Material: ";
+    // if (auto mat = std::dynamic_pointer_cast<lambertian>(spherical.mat)) {
+    //     cout << "Lambertian with albedo (" << mat->albedo.x() << ", " 
+    //                                       << mat->albedo.y() << ", " 
+    //                                       << mat->albedo.z() << ")\n";
+    // } else if (auto mat = std::dynamic_pointer_cast<metal>(spherical.mat)) {
+    //     cout << "Metal with albedo (" << mat->albedo.x() << ", " 
+    //                                  << mat->albedo.y() << ", " 
+    //                                  << mat->albedo.z() << ") and fuzz " 
+    //                                  << mat->fuzz << "\n";
+    // } else if (auto mat = std::dynamic_pointer_cast<dielectric>(spherical.mat)) {
+    //     cout << "Dielectric with refraction index " << mat->refraction_index << "\n";
+    // } else {
+    //     cout << "Unknown material type\n";
+    // }
 
     
 
@@ -106,6 +107,7 @@ int main(int argc, char* argv[]) {
     world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
     // world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.4, material_bubble));
     // world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
+
     world.add(make_shared<sphere>(spherical.center,spherical.radius,spherical.mat));
 
     camera cam;
@@ -122,6 +124,7 @@ int main(int argc, char* argv[]) {
     cam.vup      = vec3(0,1,0);
     cam.defocus_angle = 10.0;
     cam.focus_dist    = 3.4;
+    world = hittable_list(make_shared<bvh_node>(world));
     cam.render(world,argc,argv);
         
 }
