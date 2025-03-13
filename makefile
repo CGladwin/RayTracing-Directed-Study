@@ -41,5 +41,8 @@ perf: compile_cpp
 	@rm -rf callgrind.out
 	$(MAKE) clean
 
+todo: 
+	@python3 ./todo_finder.py ./src/include/
+
 # Tells Make that these are not files
 .PHONY: all compile_cpp run_cpp clean png_clean doxy perf

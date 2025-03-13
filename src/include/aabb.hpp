@@ -31,6 +31,7 @@ class aabb {
         return x;
     }
 
+    // TODO: document this function
     bool hit(const ray& r, interval ray_t) const {
         const point3& ray_orig = r.origin();
         const vec3&   ray_dir  = r.direction();
