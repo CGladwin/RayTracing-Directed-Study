@@ -2,6 +2,7 @@
 
 #include "ray.hpp"
 #include "interval.hpp"
+// #include "aabb.hpp"
 
 class material;
 
@@ -30,4 +31,6 @@ class hittable {
 
     // pure virtual function; must be overridden in derived classes
     virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
+
+    // virtual aabb bounding_box() const = 0;
 };

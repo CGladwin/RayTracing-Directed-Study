@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vec3.hpp"
+#include "vec3.cpp"
 
 /**
  * @brief A ray in 3D space.

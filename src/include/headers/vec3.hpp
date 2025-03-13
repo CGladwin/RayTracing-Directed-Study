@@ -1,17 +1,19 @@
 #pragma once
 
-#include "common.hpp"
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include "../common.hpp"
 
 /**
  * @brief A 3D vector class.
  */
-class vec3 {
-  public:
+struct vec3 {
     double e[3]; /// The components of the vector.
 
     /**
-     * @brief Default constructor. Initializes all components to 0.
-     */
+    * @brief Default constructor. Initializes all components to 0.
+    */
     constexpr vec3() noexcept : e{0, 0, 0} {}
 
     /**
@@ -21,6 +23,9 @@ class vec3 {
      * @param e2 The z-component.
      */
     constexpr vec3(double e0, double e1, double e2) noexcept : e{e0, e1, e2} {}
+
+    /// Constructs a vector from a std::vector<float>.
+    vec3(std::vector<float> v3) noexcept : e{v3[0],v3[1],v3[2]} {};
 
     /**
      * @brief Returns the x-component of the vector.

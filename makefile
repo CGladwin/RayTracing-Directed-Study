@@ -35,5 +35,11 @@ png_clean:
 doxy:
 	@doxygen $(SRC_DIR)/doxyfile
 
+perf: compile_cpp
+	@valgrind --tool=callgrind --callgrind-out-file=callgrind.out $(EXECUTABLE)
+	@python3 ./gprof2dot.py -f callgrind callgrind.out | dot -Tsvg -o output.svg
+	@rm -rf callgrind.out
+	$(MAKE) clean
+
 # Tells Make that these are not files
-.PHONY: all compile_cpp run_cpp clean png_clean
+.PHONY: all compile_cpp run_cpp clean png_clean doxy perf

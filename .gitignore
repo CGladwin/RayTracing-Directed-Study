@@ -38,5 +38,6 @@
 # image files
 *.ppm
 *.png
+*.svg
 
-# 
+#
