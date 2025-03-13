@@ -169,7 +169,7 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
   - these boxes can be treated as "slabs" only defined by intervals in space
     - In 3D, a slab is the space between two parallel planes
       - we only need 3 slabs to define an AABB 
-    - an interval is distinct from a vector, in that it has magnitude defined by 2 endpoints, but not direction
+    - an interval here is distinct from a vector, in that it has magnitude defined by 2 endpoints, but not direction
 - "if a ray intersects the box bounded by all pairs of planes, then all t-intervals will overlap"
   - i.e. if a ray intersects a box, the equation `Ray_point(constant_t)=Origin_Point + constant_t * direction_Vec` will have some solution t, where Ray_point(t).x, Ray_point(t).y and  Ray_point(t).z is within its interval, 
 - The pseudocode of what we're trying to do (by breaking down a ray into its axial components and finding if they land within an interval):
@@ -181,4 +181,10 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
   ```  
 - some caveats:
   - we need to handle when a ray is travelling in a negative direction, and want to return the inverse of an interval we planned for (e.g, [7,3] instead of [3,7])
-  - because we're breaking down the ray formula into its components (e.g. `Ray_point(constant_t).x = Origin_Point.x + constant_t * direction_Vec.x`), its possible for a component to be 0 if the ray does not move in that axis (which results in dividing by 0 when isolating for t!). Its also possible for the ray origin to lie on a slab, if true along with the former, results in 0/0 = NaN!
+    - When computing intersections, you need to ensure that tx0 is the smaller value and tx1 is the larger value. If they are reversed, you’ll need to swap them to maintain consistency
+  - because we're breaking down the ray formula into its components (e.g. `Ray_point(constant_t).x = Origin_Point.x + constant_t * direction_Vec.x`), its possible for a direction_Vec component to be 0 if the ray does not move in that axis (which results in dividing by 0 when isolating for t!). Its also possible for the ray origin to lie on a slab, if true along with the former, results in 0/0 = NaN!
+  - When dx = 0, you can use min and max operations to correctly determine whether the ray intersects the slab. For example:
+    - If both tx0 and tx1 are +∞, the ray is outside the slab and moving away from it.
+    - If both are -∞, the ray is outside the slab and moving toward it (but still parallel, so no intersection).
+    - If one is +∞ and the other is -∞, the ray lies entirely within the slab.
+  - For now, the book asks us to arbitrarily decide whether the rays whose origins are on a slab plane are hit or not

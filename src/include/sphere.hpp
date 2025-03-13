@@ -10,10 +10,17 @@
  * 
  */
 struct sphere : public hittable {
-  sphere() : center(point3()), radius(0.0), mat(nullptr) {}
+  sphere() : center(point3()), radius(0.0), mat(nullptr) {
+    auto rvec = vec3(radius, radius, radius);
+    bbox = aabb(center - rvec, center + rvec);
+  }
 
   sphere(const point3& center, double radius, shared_ptr<material> mat)
-    : center(std::move(center)), radius(std::move(std::fmax(0,radius))), mat(std::move(mat)) {}
+    : center(std::move(center)), radius(std::move(std::fmax(0,radius))), mat(std::move(mat)) 
+    {
+      auto rvec = vec3(radius, radius, radius);
+      bbox = aabb(center - rvec, center + rvec);
+    }
 
   /**
    * @brief uses ray sphere intersection formula to determine if sphere has been hit by ray-cast
@@ -58,4 +65,5 @@ struct sphere : public hittable {
   point3 center;
   double radius;
   shared_ptr<material> mat;
+  aabb bbox;
 };

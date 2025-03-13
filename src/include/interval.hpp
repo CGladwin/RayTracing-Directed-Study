@@ -16,6 +16,20 @@ class interval {
     constexpr interval() noexcept : min(+infinity), max(-infinity) {}
 
     /**
+     * @brief Construct a new interval object, given 2 interval objects, 
+     * taking the min and max of the set of both of them
+     * (necessary for the Bound Volume Hierarchy)
+     * 
+     * @param a 
+     * @param b 
+     */
+    interval(const interval& a, const interval& b) {
+        // Create the interval tightly enclosing the two input intervals.
+        min = a.min <= b.min ? a.min : b.min;
+        max = a.max >= b.max ? a.max : b.max;
+    }
+
+    /**
      * @brief Constructs an interval with the given bounds.
      * @param min The lower bound.
      * @param max The upper bound.
@@ -59,10 +73,18 @@ class interval {
         return x;
     }
 
+    /**
+     * @brief pads an interval by a given amount
+     * 
+     * @param delta 
+     * @return constexpr interval 
+     */
     constexpr interval expand(double delta) const noexcept {
         auto padding = delta/2;
         return interval(min - padding, max + padding);
     }
+
+    
 
     /// Represents an empty interval.
     static const interval empty;

@@ -78,20 +78,20 @@ int main(int argc, char* argv[]) {
                          << spherical.center.z() << ")\n";
     cout << "  Radius: " << spherical.radius << "\n";
     cout << "  Material: ";
-    if (auto mat = std::dynamic_pointer_cast<lambertian>(spherical.mat)) {
-        cout << "Lambertian with albedo (" << mat->albedo.x() << ", " 
-                                          << mat->albedo.y() << ", " 
-                                          << mat->albedo.z() << ")\n";
-    } else if (auto mat = std::dynamic_pointer_cast<metal>(spherical.mat)) {
-        cout << "Metal with albedo (" << mat->albedo.x() << ", " 
-                                     << mat->albedo.y() << ", " 
-                                     << mat->albedo.z() << ") and fuzz " 
-                                     << mat->fuzz << "\n";
-    } else if (auto mat = std::dynamic_pointer_cast<dielectric>(spherical.mat)) {
-        cout << "Dielectric with refraction index " << mat->refraction_index << "\n";
-    } else {
-        cout << "Unknown material type\n";
-    }
+    // if (auto mat = std::dynamic_pointer_cast<lambertian>(spherical.mat)) {
+    //     cout << "Lambertian with albedo (" << mat->albedo.x() << ", " 
+    //                                       << mat->albedo.y() << ", " 
+    //                                       << mat->albedo.z() << ")\n";
+    // } else if (auto mat = std::dynamic_pointer_cast<metal>(spherical.mat)) {
+    //     cout << "Metal with albedo (" << mat->albedo.x() << ", " 
+    //                                  << mat->albedo.y() << ", " 
+    //                                  << mat->albedo.z() << ") and fuzz " 
+    //                                  << mat->fuzz << "\n";
+    // } else if (auto mat = std::dynamic_pointer_cast<dielectric>(spherical.mat)) {
+    //     cout << "Dielectric with refraction index " << mat->refraction_index << "\n";
+    // } else {
+    //     cout << "Unknown material type\n";
+    // }
 
 
     auto material_json = make_shared<lambertian>(color(scene_json["center"].get<std::vector<float>>()));

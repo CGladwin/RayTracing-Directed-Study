@@ -59,6 +59,18 @@ inline double random_double(double min, double max) noexcept {
 }
 
 /**
+ * @brief generate random int
+ * 
+ * @param min 
+ * @param max 
+ * @return int 
+ */
+inline int random_int(int min, int max) {
+    // Returns a random integer in [min,max].
+    return int(random_double(min, max+1));
+}
+
+/**
  * @brief A helper struct for overloading arbitrary function objects Ts (e.g., for std::visit).
  */
 template<class... Ts>
