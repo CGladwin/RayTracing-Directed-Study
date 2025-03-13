@@ -11,15 +11,15 @@
  */
 struct sphere : public hittable {
   sphere() : center(point3()), radius(0.0), mat(nullptr) {
-    auto rvec = vec3(radius, radius, radius);
-    bbox = aabb(center - rvec, center + rvec);
+    // auto rvec = vec3(radius, radius, radius);
+    // bbox = aabb(center - rvec, center + rvec);
   }
 
   sphere(const point3& center, double radius, shared_ptr<material> mat)
     : center(std::move(center)), radius(std::move(std::fmax(0,radius))), mat(std::move(mat)) 
     {
       auto rvec = vec3(radius, radius, radius);
-      bbox = aabb(center - rvec, center + rvec);
+      // bbox = aabb(center - rvec, center + rvec);
     }
 
   /**
@@ -65,5 +65,5 @@ struct sphere : public hittable {
   point3 center;
   double radius;
   shared_ptr<material> mat;
-  aabb bbox;
+  // aabb bbox;
 };
