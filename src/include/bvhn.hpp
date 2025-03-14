@@ -6,7 +6,7 @@
 #include <algorithm>
 
 /**
- * @brief A node in a Bounding Volume Hierarchy (BVH) used for efficient ray intersection
+ * @brief A node in a Bounding Volume Hierarchy (BVH) acceleration structure, to make ray-object intersection faster
  * 
  */
 class bvh_node : public hittable {

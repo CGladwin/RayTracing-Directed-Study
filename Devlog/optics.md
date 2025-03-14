@@ -154,6 +154,7 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
         - this results in an image that's horizontally level (our viewport pixel rows are parallel to the world's x-axis )
 
 #### Bound Volume Hierarchies
+- [here](https://jacco.ompf2.com/2022/04/13/how-to-build-a-bvh-part-1-basics/) is a deeper dive into bound volume hierarchies
 - The core idea of Bound Volume Hierarchies appears to be similar to the binary search algorithm on a sorted array.
   - Instead of searching the whole array linearly for the value you want, you subdivide the array, check if the value you want would fall within the elements bounding it, and if so, continue subdividing recursively.
   ```py
