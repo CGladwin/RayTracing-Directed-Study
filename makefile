@@ -42,7 +42,7 @@ perf: compile_cpp
 	$(MAKE) clean
 
 todo: 
-	@python3 ./todo_finder.py ./src/include/
+	@python3 ./todo_finder.py ./
 
 # Tells Make that these are not files
 .PHONY: all compile_cpp run_cpp clean png_clean doxy perf

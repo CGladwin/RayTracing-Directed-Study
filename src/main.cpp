@@ -35,13 +35,13 @@ static const unordered_map<string, material_func>& get_material_map() {
     return material_map;
 }
 
-void from_json(const json& j, sphere& s) {
-    
+// TODO: make 2nd unordered map to dispatch based on which primitive is being constructed
+shared_ptr<sphere> from_json(const json& j) {
     // Deserialize center
-    s.center = point3(j.at("center").get<vector<float>>());
+    point3 center = point3(j.at("center").get<vector<float>>());
 
     // Deserialize radius
-    j.at("radius").get_to(s.radius);
+    double radius = j.at("radius").get<double>();
 
     // Get material type and lookup in map
     string mat_str = j.at("material").get<string>();
@@ -51,8 +51,9 @@ void from_json(const json& j, sphere& s) {
     if (it != material_map.end()) {
         mat = it->second(j);
     }
-    s.mat = mat;
-    
+
+    // Create and return a shared_ptr<sphere>
+    return std::make_shared<sphere>(center, radius, mat);
 }
 
 
@@ -72,7 +73,7 @@ int main(int argc, char* argv[]) {
     )");
 
 
-    auto spherical = scene_json.template get<sphere>();
+    auto spherical = from_json(scene_json);
     // cout << "Sphere after deserialization:\n";
     // cout << "  Center: (" << spherical.center.x() << ", " 
     //                      << spherical.center.y() << ", " 
@@ -108,7 +109,7 @@ int main(int argc, char* argv[]) {
     // world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.4, material_bubble));
     // world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
 
-    world.add(make_shared<sphere>(spherical.center,spherical.radius,spherical.mat));
+    world.add(spherical);
 
     camera cam;
 
