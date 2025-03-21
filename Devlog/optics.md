@@ -190,3 +190,15 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
     - If one is +∞ and the other is -∞, the ray lies entirely within the slab.
   - For now, the book asks us to arbitrarily decide whether the rays whose origins are on a slab plane are hit or not
 - I've not yet tested the results empirically of the speedup between BVH and the more naive approach, but casual guesswork seems to show that, for 3 or fewer spheres, the naive approach is much faster, and for 4 spheres, they're about the same (with BVH having significantly less change in time-cost than naive)
+
+### Quads
+- here, a quad is implemented as a parallelogram (opposite sides parallel)
+  - the equivalent of its origin point is an arbitrarily chosen starting corner, Q
+  - the adjacent corner in 1 direction can be Q + v (v being a vector representing the edge between the points)'
+    - in the other direction its Q + vector u
+  - the opposite corner from Q is thus Q + u + v
+- note that a quad is a 2d shape in 3d space, regardless of the position of the points
+  - this can lead to issues with ray intersection, since their Axis-Aligned Bounding Box may have 0 thickness in one dimension.
+  - to resolve this, we have to pad bounding boxes to a mimimum threshold (since bounding boxes are an approximation technique to save compute, this is fine)
+    - we go over calculating ray-quad intersection in "the math"
+     - 

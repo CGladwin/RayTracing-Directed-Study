@@ -23,6 +23,7 @@
   - vectors that move perpendicular from an object at a given point. 
 - vector dot product
   - takes two vectors (A, B), and produces a scalar based on their length and internal angle
+    - the dot product tells us how closely two vectors go in the same direction
   - with pseudocode, it's `SUM(MAP(A,B -> A*B))`
   - NOTE: `DOT(A,A) = A^2`
   - NOTE: for scalars k,l, `DOT(k,l) = k*l`
@@ -131,3 +132,24 @@ the formula for this is:
 - "After a few cross products and vector normalizations, we now have a complete orthonormal basis (u,v,w) to describe our camera’s orientation"???
   - an orthonormal basis is a set of vectors that are normalized (have a length of 1) and perpendicular to all other vectors in the set (i.e. the dot product of any 2 distinct vectors in the set will be 0)
   - In 3d space, this set can have up to 3 vectors
+
+### Ray Quad intersection
+-  Ray-quad intersection will be determined in three steps:
+   -  finding the plane that contains that quad,
+   -  solving for the intersection of a ray and the quad-containing plane,
+   -  determining if the hit point lies inside the quad.
+-  the formula we use for ray-plane intersection is:
+   -  Ax+By+Cz=D
+      -  where A,B,C, and D are arbitrary constants, and x,y, and z are the coordinates of any point that lie on the plane
+-  rephrase in terms of vectors: "given the plane perpendicular to the normal vector n=(A,B,C), and the position vector v=(x,y,z) (that is, the vector from the origin to any point on the plane), then we can use the dot product to solve for D: `n⋅v=D` for any position on the plane"
+   -  I had to reread this a bit
+   -  recall that the dot product tells us how closely two vectors go in the same direction (assuming they're normalized)
+   -  if we take a normal vector from the origin (our camera) and point it at any point on the plane (x,y,z), and take its dot product with the normal vector perpendicular to the plane (A,B,C) it will give us the same value, our constant D, since they will all have the same "similarity"
+-  Plugging in our ray equation `R(t)=P+td`, and setting `R(t) = v`, we get 
+   -  `n ⋅ (P+td)  = D`
+   -  `n⋅P+n⋅td=D`
+   -  `n⋅P+t(n⋅d)=D` (pulling out the scalar)
+   -  `t = (D - (dot(n,p))) / (dot(n,d))`
+      -  note: if the ray is parallel to the plane, the denominator will be 0, which means we should compute this first and return a miss
+      -  if the ray t parameter is less than the minimum acceptable value, we also record a miss (same as we did before with spheres)
+-  
