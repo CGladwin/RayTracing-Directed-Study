@@ -4,6 +4,7 @@ SRC_DIR = src
 CPP_FILE = $(SRC_DIR)/main.cpp
 EXECUTABLE = $(SRC_DIR)/main.out
 OUTPUT = $(SRC_DIR)/images/output.png
+INPUT = example.json
 
 # default target
 all: compile_cpp run_cpp clean
@@ -16,7 +17,7 @@ compile_cpp:
 
 # run compiled code
 run_cpp: compile_cpp
-	@./$(EXECUTABLE) $(OUTPUT)
+	@./$(EXECUTABLE) $(OUTPUT) $(INPUT)
 
 # Compile the program with debugging symbols and no optimizations
 debug:

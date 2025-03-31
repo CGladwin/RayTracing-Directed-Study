@@ -211,7 +211,7 @@ void pure_json_test(int argc, char* argv[]){
     hittable_list world;
 
     // Example JSON scene configuration
-    json scene_json = json::parse(R"(
+    json scene_json1 = json::parse(R"(
         {
             "primitives": [
                 {
@@ -258,6 +258,8 @@ void pure_json_test(int argc, char* argv[]){
             }
         }
     )");
+    std::ifstream ifs(argv[2]);
+    json scene_json = json::parse(ifs);
 
     // Parse primitives
     const auto& primitive_map = get_primitive_map();
