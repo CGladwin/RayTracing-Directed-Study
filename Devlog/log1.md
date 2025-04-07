@@ -14,3 +14,4 @@ I expect this will require me to refactor the code a bit.
 ### Modernizing the code structure; Explaining My Changes
 
 ### Iterating on the project
+- in the future: may make the project a hybrid raytracer rasterizer that rasterizes the first bounce and raytraces remaining bounces

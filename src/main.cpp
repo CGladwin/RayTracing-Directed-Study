@@ -309,11 +309,12 @@ void simple_light(int argc, char* argv[]) {
 
     // auto pertext = make_shared<noise_texture>(4);
     world.add(make_shared<sphere>(point3(0,-1000,0), 1000, material_center));
-    world.add(make_shared<sphere>(point3(0,2,0), 2, material_right));
+    // world.add(make_shared<sphere>(point3(0,2,0), 2, material_right));
 
     auto difflight = make_shared<diffuse_light>(color(4,4,4));
     world.add(make_shared<quad>(point3(3,1,-2), vec3(2,0,0), vec3(0,2,0), difflight));
     world.add(make_shared<sphere>(point3(0,7,0), 2, difflight));
+    world.add(box(point3(point3(0,0,-1)), point3(point3(2,2,2)),material_right));
 
     camera cam;
 
@@ -324,7 +325,7 @@ void simple_light(int argc, char* argv[]) {
     cam.background        = color(0,0,0);
 
     cam.vfov     = 20;
-    cam.lookfrom = point3(26,3,6);
+    cam.lookfrom = point3(10,10,6);
     cam.lookat   = point3(0,2,0);
     cam.vup      = vec3(0,1,0);
 
