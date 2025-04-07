@@ -201,4 +201,9 @@ The book mentions "The (current) picture is very dark, but our spheres only abso
   - this can lead to issues with ray intersection, since their Axis-Aligned Bounding Box may have 0 thickness in one dimension.
   - to resolve this, we have to pad bounding boxes to a mimimum threshold (since bounding boxes are an approximation technique to save compute, this is fine)
     - we go over calculating ray-quad intersection in "the math"
-     - 
+
+### Lighting (emissive materials)
+- Modern approaches have more physically based lights, which have position and size (an emmisive material)
+- To make this emissive material, we need to #1 set a default background color as part of our world (previously we had a hard-coded blue-white gradient, which looked pretty and provided some ambient lighting) and #2 create a material with the following rule:
+  1. on hit -> return color
+- then #3 we modify the camera class to consider emitted materials if the ray hits a scene object

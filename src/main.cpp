@@ -291,13 +291,83 @@ void pure_json_test(int argc, char* argv[]){
     cam.vup               = vec3(cam_json["vup"].get<vector<float>>());
     cam.defocus_angle     = cam_json["defocus_angle"].get<double>();
     cam.focus_dist        = cam_json["focus_dist"].get<double>();
-
+    cam.background        = color(0.70, 0.80, 1.00);
+    cout<<cam.lookfrom;
     // Build BVH
     world = hittable_list(make_shared<bvh_node>(world));
 
     cam.render(world, argc, argv);
 }
 
+void simple_light(int argc, char* argv[]) {
+    hittable_list world;
+    auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+    auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
+    auto material_left   = make_shared<dielectric>(1.50);
+    // auto material_bubble = make_shared<dielectric>(1.00 / 1.50);
+    auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
+
+    // auto pertext = make_shared<noise_texture>(4);
+    world.add(make_shared<sphere>(point3(0,-1000,0), 1000, material_center));
+    world.add(make_shared<sphere>(point3(0,2,0), 2, material_right));
+
+    auto difflight = make_shared<diffuse_light>(color(4,4,4));
+    world.add(make_shared<quad>(point3(3,1,-2), vec3(2,0,0), vec3(0,2,0), difflight));
+    world.add(make_shared<sphere>(point3(0,7,0), 2, difflight));
+
+    camera cam;
+
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth         = 50;
+    cam.background        = color(0,0,0);
+
+    cam.vfov     = 20;
+    cam.lookfrom = point3(26,3,6);
+    cam.lookat   = point3(0,2,0);
+    cam.vup      = vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world, argc, argv);
+}
+
+void cornell_box(int argc, char* argv[]) {
+    hittable_list world;
+
+    auto red   = make_shared<lambertian>(color(.65, .05, .05));
+    auto white = make_shared<lambertian>(color(.73, .73, .73));
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto light = make_shared<diffuse_light>(color(15, 15, 15));
+
+    world.add(make_shared<quad>(point3(555,0,0), vec3(0,555,0), vec3(0,0,555), green));
+    world.add(make_shared<quad>(point3(0,0,0), vec3(0,555,0), vec3(0,0,555), red));
+    world.add(make_shared<quad>(point3(343, 554, 332), vec3(-130,0,0), vec3(0,0,-105), light));
+    world.add(make_shared<quad>(point3(0,0,0), vec3(555,0,0), vec3(0,0,555), white));
+    world.add(make_shared<quad>(point3(555,555,555), vec3(-555,0,0), vec3(0,0,-555), white));
+    world.add(make_shared<quad>(point3(0,0,555), vec3(555,0,0), vec3(0,555,0), white));
+
+    camera cam;
+
+    cam.aspect_ratio      = 1.0;
+    cam.image_width       = 600;
+    cam.samples_per_pixel = 200;
+    cam.max_depth         = 50;
+    cam.background        = color(0,0,0);
+
+    cam.vfov     = 40;
+    cam.lookfrom = point3(278, 278, -800);
+    cam.lookat   = point3(278, 278, 0);
+    cam.vup      = vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world, argc,argv);
+}
+
 int main(int argc, char* argv[]) {
-    pure_json_test(argc,argv);
+    // pure_json_test(argc,argv);
+    simple_light(argc,argv);
+    // cornell_box(argc,argv);
 }

@@ -12,6 +12,10 @@ struct material {
     ) const {
         return false;
     }
+
+    virtual color emitted(double u, double v, const point3& p) const {
+        return color(0,0,0);
+    }
 };
 
 struct lambertian : public material {
@@ -91,4 +95,16 @@ struct dielectric : public material {
         r0 = r0*r0;
         return r0 + (1-r0)*std::pow((1 - cosine),5);
     }
+};
+
+class diffuse_light : public material {
+    public:
+      diffuse_light(const color& emit) : emit_color(emit) {}
+  
+      color emitted(double u, double v, const point3& p) const override {
+          return emit_color; // Directly return the emission color
+      }
+  
+    private:
+      color emit_color; // Stores the light's color
 };

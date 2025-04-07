@@ -60,16 +60,16 @@ private:
     }   
 
     /**
-     * @brief returns rgb for pixel color value
+     * @brief Compute the color contribution along a ray path using recursive ray tracing.
      * 
-     * if sphere is not hit, color is based on a a predefined gradient
+     * This function traces a ray through the scene, accumulating color contributions from light emission
+     * and surface scattering. It recursively evaluates up to a specified depth to simulate global illumination.
      * 
-     * if sphere is hit, color is based on lambertian material
-     * 
-     * @param r 
-     * @param world 
-     * @return color 
-    */
+     * @param r The ray being traced
+     * @param depth Remaining recursion depth (stops at 0 to prevent infinite loops)
+     * @param world The hittable objects in the scene
+     * @return The total computed color along the ray's path
+     */
     color ray_color(const ray& r, int depth, const hittable& world) const {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0)
@@ -77,27 +77,26 @@ private:
         
         hit_record rec;
 
-        if (world.hit(r, interval(0.001, infinity), rec)) {
-            ray scattered;
-            color attenuation;
-            if (rec.mat->scatter(r, rec, attenuation, scattered))
-                return attenuation * ray_color(scattered, depth-1, world);
-            return color(0,0,0);
-        }
-        /**
-         * lerp used to create background gradient
-         * blendedValue=(1−a)⋅startValue+a⋅endValue
-         * here, startValue = white, endValue = blue
-         * 
-         * if something was hit, it will affect r.direction vec3, which will tint the color
-         * (since the loss of energy on hits will result in smaller vectors)
-         * 
-         */
+        // If the ray hits nothing, return the background color.
+        if (!world.hit(r, interval(0.001, infinity), rec))
+            return background;
 
-        vec3 unit_direction = unit_vector(r.direction());
-        auto background_gradient = 0.5*(unit_direction.y() + 1.0);
-        // 
-        return (1.0-background_gradient)*color(1.0, 1.0, 1.0) + background_gradient*color(0.5, 0.7, 1.0);
+        ray scattered;
+        color attenuation;
+        
+        // Get color contribution from light emission at hit point
+        color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
+    
+        // If material doesn't scatter light, return only emission color
+        if (!rec.mat->scatter(r, rec, attenuation, scattered))
+            return color_from_emission;
+    
+        // Recursively compute color contribution from scattered ray, 
+        // attenuated by material's scattering properties
+        color color_from_scatter = attenuation * ray_color(scattered, depth-1, world);
+    
+        // Combine emission and scattering contributions
+        return color_from_emission + color_from_scatter;
     }
 
     ray get_ray(int i, int j) const {
@@ -139,6 +138,7 @@ public:
 
     double defocus_angle = 0;  // Variation angle of rays through each pixel
     double focus_dist = 10;    // Distance from camera lookfrom point to plane of perfect focus
+    color  background;               // Scene background color
 
     // Constructor
     camera(double aspect_ratio = 1.0,int image_width = 100,int samples_per_pixel = 10, int max_depth = 10) 
