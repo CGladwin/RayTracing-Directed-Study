@@ -313,7 +313,7 @@ void simple_light(int argc, char* argv[]) {
 
     auto difflight = make_shared<diffuse_light>(color(4,4,4));
     world.add(make_shared<quad>(point3(3,1,-2), vec3(2,0,0), vec3(0,2,0), difflight));
-    world.add(make_shared<sphere>(point3(0,7,0), 2, difflight));
+    world.add(make_shared<sphere>(point3(0,5,0), 2, difflight));
     world.add(box(point3(point3(0,0,-1)), point3(point3(2,2,2)),material_right));
 
     camera cam;
@@ -322,10 +322,10 @@ void simple_light(int argc, char* argv[]) {
     cam.image_width       = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth         = 50;
-    cam.background        = color(0,0,0);
+    cam.background        = color(148.0/255.0,191.0/255.0,1);
 
     cam.vfov     = 20;
-    cam.lookfrom = point3(10,10,6);
+    cam.lookfrom = point3(10,3,10);
     cam.lookat   = point3(0,2,0);
     cam.vup      = vec3(0,1,0);
 

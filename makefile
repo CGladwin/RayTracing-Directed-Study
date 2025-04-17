@@ -21,7 +21,7 @@ run_cpp: compile_cpp
 
 # Compile the program with debugging symbols and no optimizations
 debug:
-	@g++ -g -O0 $(CPP_FILE) -o $(EXECUTABLE)
+	@g++ -Wall -Wextra -Wpedantic -Wreorder -Wunused -Wshadow -Werror=return-type -g -O0 $(CPP_FILE) -o $(EXECUTABLE)
 	@echo "Debug build complete. Use a debugger (e.g., gdb) to run the program."
 
 # remove executable
