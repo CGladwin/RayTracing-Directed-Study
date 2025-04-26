@@ -38,7 +38,7 @@ doxy:
 
 perf: compile_cpp
 	@valgrind --tool=callgrind --callgrind-out-file=callgrind.out $(EXECUTABLE)
-	@python3 ./gprof2dot.py -f callgrind callgrind.out | dot -Tsvg -o output.svg
+	@python3 ./gprof2dot/gprof2dot.py -f callgrind callgrind.out | dot -Tsvg -o output.svg
 	@rm -rf callgrind.out
 	$(MAKE) clean
 
